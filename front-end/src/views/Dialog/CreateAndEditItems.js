@@ -53,7 +53,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
   const orgs=useSelector(state=>state.organizations.items)
   const[orgsArray,setorgsArray]=useState([])
   useEffect(() => {
-    const list=orgs.map(o=>{ return {"label":o.lastName,"id":o.id}})
+    const list=orgs.map(o=>{ return {"label":o.name,"id":o.id}})
     setorgsArray(list)
   }, [orgs])
   

@@ -34,7 +34,7 @@ const {smtpConf} = require('../config/config');
 
 
 
-router.post('/all', reqAuth, function(req, res) {
+router.post('/all', function(req, res) {
   User.find({}, function(err, users) {
     if (err) {
       res.json({success: false});

@@ -12,6 +12,7 @@ import "assets/css/material-dashboard-react.css?v=1.10.0";
 import Logout from "views/Pages/Logout";
 import CachingController from "./CachController"
 import { useSelector } from "react-redux";
+import SocketController from "SocketController";
 
 export default function App(){
     const initialized = useSelector(state => state.session.success );
@@ -19,6 +20,7 @@ export default function App(){
 
 return(    
 <>
+<SocketController />
 <CachingController />
 <BrowserRouter>
  
@@ -32,6 +34,7 @@ return(
     <Route exact path="/rtl" component={RTL} />
     </Switch>
     )}
+    
     
 </BrowserRouter>
 </>
