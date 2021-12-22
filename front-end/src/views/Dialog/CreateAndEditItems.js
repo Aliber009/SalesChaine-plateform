@@ -205,10 +205,11 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <Autocomplete
+                disableClearable
+                style={{marginTop:27}}
                 disablePortal
                 id="combo-box-demo"
                 options={orgsArray}
-                sx={{ width: 300 }}
                 renderInput={(params) => 
                 <TextField 
                 {...params} label="Client owner"  variant="standard"/>} 
@@ -242,10 +243,11 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <Autocomplete
+                style={{marginTop:27}}
+                disableClearable
                 disablePortal
-                id="combo-box-demo"
+                id="combo-box-d"
                 options={orgsArray}
-                sx={{ width: 300 }}
                 renderInput={(params) => 
                 <TextField 
                 {...params} label="Client owner"  variant="standard"/>} 
@@ -304,13 +306,14 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 <Autocomplete
                 style={{marginTop:27}}
                 disablePortal
-                id="combo-box-demo"
-                options={[{id:1,label:"SYSADMIN"},{id:2,label:"OWNER"},{id:3,label:"ADMIN"},{id:4,label:"USER"}]}
+                id="combo-box-roles"
+                options={[{id:"1A",label:"SYSADMIN"},{id:"2A",label:"OWNER"},{id:"3A",label:"ADMIN"},{id:"4A",label:"USER"}]}
                 sx={{ width: 200 }}
+                disableClearable
                 renderInput={(params) => 
                 <TextField 
                 {...params} label="Role"  variant="standard"/>} 
-                onChange={e=>setItem({...item,role:e.target.value})}
+                onChange={(e,v)=>setItem({...item,role:v.label })}
                 value={item.role}  
                  />
                 </GridItem>

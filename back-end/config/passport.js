@@ -28,15 +28,16 @@ module.exports = function(passport) {
   opts.secretOrKey = config.secret;
 
   passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-    User.findById(jwtPayload._doc._id, (err, user) => {
-      if (err) {
-        return done(err, false);
+    User.findOne({where:{id:jwtPayload._doc._id}})
+    .then((user)=>{
+      if(user){
+        
+        return done(user,true)
+       }
+      else{  return done(null, false);} 
       }
-      if (user) {
-        return done(null, user);
-      } else {
-        return done(null, false);
-      }
-    });
+    )
+   .catch(err=>{return done(err, false)}) 
+      
   }));
 };

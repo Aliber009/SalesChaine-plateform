@@ -1,20 +1,23 @@
-const mongoose = require('mongoose');
 
-const OrgSchema = new mongoose.Schema({
+  const sequelize=require('../config/sequelize')
+  const { DataTypes } = require('sequelize');
+
+
+  const Organization = sequelize.define(
+    'Organization',
+    {
       name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       description: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
-      date: {
-        type: Date,
-        default: Date.now,
-      },
+      
 
 })
-const Organization = mongoose.model('Organization', OrgSchema);
 
-module.exports = Organization;
+Organization.sync()
+
+module.exports=Organization

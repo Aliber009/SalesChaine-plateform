@@ -30,6 +30,7 @@ const path = require('path');
 const db = require('./config/keys').mongoURI;
 const CronJob = require('cron').CronJob;
 const crons = require('./config/crons');
+const sequelize=require('./config/sequelize')
 
 
 
@@ -45,7 +46,7 @@ require('./config/passport')(passport);
 // DB Config
 
 // Connect to MongoDB
-mongoose
+/* mongoose
     .connect(
         db, {useNewUrlParser: true,
           useFindAndModify: false,
@@ -53,7 +54,7 @@ mongoose
           useCreateIndex: true},
     )
     .then(() => console.log('MongoDB Connected'))
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err)); */
 
 app.use(cors());
 

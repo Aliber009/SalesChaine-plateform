@@ -7,6 +7,7 @@ const { reducer, actions } = createSlice({
   },
   reducers: {
     update(state, action) {
+      //state.items.push({action.payload['deviceId']:action.pay})
       state.items[action.payload['deviceId']] = action.payload;
       console.log("pos",action.payload)
     },

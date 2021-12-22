@@ -1,24 +1,21 @@
-const mongoose = require('mongoose');
+const sequelize=require('../config/sequelize')
+ const { DataTypes } = require('sequelize');
+ const Organization = require('./organization')
 
-const DeviceSchema = new mongoose.Schema({
+  const Device = sequelize.define(
+    'Device',
+    {
       name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       imei: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
-      organization: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization'
-      },
-      date: {
-        type: Date,
-        default: Date.now,
-      },
+     
 
 })
-const Device = mongoose.model('Device', DeviceSchema);
-
-module.exports = Device;
+Device.belongsTo(Organization, {foreignKey: 'organization'});
+Device.sync()
+module.exports=Device

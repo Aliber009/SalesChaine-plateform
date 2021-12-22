@@ -1,59 +1,44 @@
-/* eslint-disable max-len */
-/* !
 
-=========================================================
-* Argon React NodeJS - v1.0.0
-=========================================================
+//Chnaging Models to SQL models using  SEQUELIZE
 
-* Product Page: https://argon-dashboard-react-nodejs.creative-tim.com/
-* Copyright 2020 Creative Tim (https://https://www.creative-tim.com//)
-* Copyright 2020 ProjectData (https://projectdata.dev/)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react-nodejs/blob/main/README.md)
+const sequelize=require('../config/sequelize')
+ const { DataTypes } = require('sequelize');
 
-* Coded by Creative Tim & ProjectData
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-const mongoose = require('mongoose');
-
-const UserSchema = new mongoose.Schema({
+  const User = sequelize.define(
+    'User',
+    {
   name: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   role: {
-    type:String,
-    required:false,
+    type: DataTypes.STRING,
+    allowNull:true,
   },
   company:{
-    type:String,
-    required:false,
+    type: DataTypes.STRING,
+    allowNull:true,
   },
   password: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   accountConfirmation: {
-    type: Boolean,
-    default: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   resetPass: {
-    type: Boolean,
-    default: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
+  
 });
+User.sync()
+module.exports=User
 
-const User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+

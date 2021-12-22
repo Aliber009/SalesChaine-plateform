@@ -9,7 +9,7 @@ const { reducer, actions } = createSlice({
     update(state, action) {
       state.items=[];
       action.payload.forEach(element => {
-        state.items.push({id:element._id,name:element.name,email:element.email,role:element.role,company:element.company,accountConfirmation:element.accountConfirmation})
+        state.items.push({id:element.id,name:element.name,email:element.email,role:element.role,company:element.company,accountConfirmation:element.accountConfirmation})
       });
     },
     AddOrUpdateOne(state,action){

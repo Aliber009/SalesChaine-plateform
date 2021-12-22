@@ -1,24 +1,20 @@
-const mongoose = require('mongoose');
+const sequelize=require('../config/sequelize')
+const { DataTypes } = require('sequelize');
 
-const PositionSchema = new mongoose.Schema({
+const Devices=sequelize.define('Devices');
+const Position = sequelize.define('Position',
+{
       lat: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       lon: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
-      deviceId:{
-          type:mongoose.Schema.Types.ObjectId,
-          ref:'Device'
-      },
-      date: {
-        type: Date,
-        default: Date.now,
-      },
-
+      
 })
-const Position = mongoose.model('Position', PositionSchema);
+Position.belongsTo(Devices, {foreignKey: 'deviceId'});
+Position.sync()
 
 module.exports = Position;
