@@ -1,8 +1,11 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup ,Polyline} from 'react-leaflet'
+import React,{ useState, useEffect} from 'react';
+import { MapContainer, TileLayer, Marker, Popup ,Polyline, useMap, MapConsumer} from 'react-leaflet'
 import './map.css'
 import SnakeAnim from './replayAnimation';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { useSelector } from 'react-redux';
+import { marker } from 'leaflet';
+import PosMap from './CurrentPosition';
 
 
 
@@ -16,7 +19,32 @@ const limeOptions = { color: '#113CFC', stroke:true }
  
 
 
-const Maps=({ markers , startAnimation})=>{
+const Maps=({ markers , startAnimation, routes})=>{
+
+  const position  = useSelector(state => state.positions.items)
+  const [marks,setmarks]=useState([])
+  
+
+  useEffect(() => {
+    var pos=[]
+    Object.entries(position).forEach(i=>{pos.push(i[1])})
+    setmarks(pos)
+    return () => {
+      null
+    }
+  }, [position])
+
+/*   useEffect(()=>{
+    findCurrentPos(markers)
+  },[markers])
+
+  const findCurrentPos=(id)=>{
+    if(position.id){
+      map.panTo(position.id)
+    }
+  } */
+
+
 
 
   return(
@@ -28,15 +56,19 @@ const Maps=({ markers , startAnimation})=>{
     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   />
-   <SnakeAnim startAnimation={startAnimation}  />
+   <SnakeAnim startAnimation={startAnimation} routes={routes} />
    <MarkerClusterGroup>
-  {markers.map((m)=>(
+  {marks.map((m)=>(
   <Marker position={m}>
     <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
+      Nextronic Device. <br /> Websocket works fine :)
     </Popup>
   </Marker>
+  
   ))}
+  {position[markers] && (
+   <PosMap pos={position[markers]} />
+  )}
   </MarkerClusterGroup>
 </MapContainer>
   )

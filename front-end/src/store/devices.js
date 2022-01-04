@@ -29,6 +29,12 @@ const { reducer, actions } = createSlice({
         state.items.push({id:action.payload.deviceId,name:action.payload.name,imei:action.payload.imei,organization:action.payload.organization})
       } 
     },
+    displayShared(state,action){
+       const parents=action.payload
+       for(var i=0;i<parents.length;i++){
+          parents[i].Devices.forEach(device=>state.items.push({...device,shared:parents[i].email}))
+       }
+    },
     deleteOne(state,action){
       var newState=[]
       console.log("action",action.payload)

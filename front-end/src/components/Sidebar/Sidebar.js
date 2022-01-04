@@ -32,7 +32,8 @@ export default function Sidebar(props) {
     if(data.success){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        dispatch(sessionActions.updateSession({success:false}))
+        
+        dispatch(sessionActions.updateSession(false))
         props.history.push('/auth/login')
         }
     else{

@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
 
 //function that keep sending every 10 seconds 
 const SendAndSave=()=>{
-    setInterval(f, 10000);
+    setInterval(f, 5000);
 }
 
 function f(){
@@ -43,6 +43,8 @@ function f(){
     .catch(err=>{console.log(err)})  
     
 }
+
+app.use('/api/positions',require('./routes/positions'))
 
 server.listen(5000, () => {
   console.log('listening on *:5000');

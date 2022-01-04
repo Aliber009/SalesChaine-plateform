@@ -9,6 +9,7 @@ const { reducer, actions } = createSlice({
   reducers: {
     updateSession(state, action) {
       state.success = action.payload;
+      
     },
     updateUser(state, action) {
       state.user = action.payload;

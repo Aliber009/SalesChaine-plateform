@@ -20,14 +20,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const mongoose = require('mongoose');
 const compression = require('compression');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
-const db = require('./config/keys').mongoURI;
 const CronJob = require('cron').CronJob;
 const crons = require('./config/crons');
 const sequelize=require('./config/sequelize')
@@ -76,9 +74,11 @@ if (process.env.NODE_ENV === 'PROD') {
 
 
 // Initialize routes middleware
+
 app.use('/api/users', require('./routes/users'));
 app.use('/api/devices',require('./routes/devices'));
 app.use('/api/organizations',require('./routes/organizations'));
+app.use('/api/groups',require('./routes/groups'));
 
 
 // run at 3:10 AM -> delete old tokens

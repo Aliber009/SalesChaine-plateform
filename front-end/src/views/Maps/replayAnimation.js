@@ -4,42 +4,50 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet.polyline.snakeanim/L.Polyline.SnakeAnim.js";
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
+import { styled } from "@material-ui/core";
+import FlagIcon from '@mui/icons-material/Flag';
 
 
 
-const SnakeAnim = ({ startAnimation }) => {
+const SnakeAnim = ({ startAnimation, routes }) => {
   const  map  = useMap();
   
 
   useEffect(() => {
     if (!startAnimation) return;
-    const trd = [63.5, 11];
-    const mad = [40.5, -3.5];
-    const lnd = [51.5, -0.5];
-    const ams = [52.3, 4.75];
-    const vlc = [39.5, -0.5];
 
-    const route = L.featureGroup([
-      L.marker(trd, { ModeEditOutlinedIcon }),
-      L.polyline([trd, ams]),
-      L.marker(ams, { ModeEditOutlinedIcon }),
-      L.polyline([ams, lnd]),
-      L.marker(lnd, { ModeEditOutlinedIcon }),
-      L.polyline([lnd, mad]),
-      L.marker(mad, { ModeEditOutlinedIcon }),
-      L.polyline([mad, vlc]),
-      L.marker(vlc, { ModeEditOutlinedIcon })
-    ]);
-
-    map.fitBounds(route.getBounds());
-
+    var styledPath=[]
+    var markers=[]
+    for(var i = 1;i<routes.length;i++){
+      if(i%10!=0 ){ 
+        markers.push(routes[i]) 
+      }
+      else{
+        markers.push(routes[i])
+        styledPath.push(L.polyline(markers))
+        styledPath.push(L.marker(routes[i],{ ModeEditOutlinedIcon }))
+        markers=[routes[i]]
+      }   
+    }
+    
+    const route = L.featureGroup(
+      styledPath
+    );
+    try{
+    map.fitBounds(route.getBounds())
+    }
+    catch{
+      console.log("No path was saved for this Period ")
+    }
     map.addLayer(route);
+  
 
     route.snakeIn();
 
     route.on("snakestart snake snakeend", ev => {
       console.log(ev.type);
     });
+  
    
   }, [startAnimation]);
 

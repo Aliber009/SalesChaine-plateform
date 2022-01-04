@@ -18,6 +18,7 @@ instance.interceptors.request.use(async (config) => {
     return config;
 });
 
+
 export const getAll = async () => (
     await instance.post('users/all')
 );
@@ -42,10 +43,19 @@ export const login = async (email, password) => (
     await instance.post('users/login', {email, password})
 );
 
-export const logout = async token => (
-    await instance.post('users/logout', {token})
+export const logout = async () => (
+    await instance.post('users/logout', )
 );
 
 export const edit = async (userID, name, email) => (
     await instance.post('/users/edit', {userID, name, email})
+);
+export const associate = async (email, deviceId) => {
+    //get senderUser Id 
+      const user=localStorage.getItem("user")
+      const userId=JSON.parse(user).id
+      return await instance.post('users/associate',  {email, deviceId,userId})
+};
+export const registerassociate = async (name, email, password, phone, agency, role) => (
+    await instance.post('users/registerassociate',  {name, email, password, phone, agency, role})
 );

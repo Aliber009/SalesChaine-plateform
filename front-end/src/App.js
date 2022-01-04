@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
@@ -9,14 +9,29 @@ import "assets/plugins/nucleo/css/nucleo.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/scss/argon-dashboard-react.scss";
 import "assets/css/material-dashboard-react.css?v=1.10.0";
-import Logout from "views/Pages/Logout";
 import CachingController from "./CachController"
 import { useSelector } from "react-redux";
 import SocketController from "SocketController";
 
-export default function App(){
-    const initialized = useSelector(state => state.session.success );
-    console.log("sessions :",initialized)
+
+export default  function App(){
+  //const [logged,setlogged]=useState()
+  const [kickout, setkickout] = useState(false)
+    const logged =  useSelector(state => state.session.success );
+
+    //kickout if not logged
+    
+     useEffect(()=>{
+      if(logged==false){
+       setTimeout(function() {
+         setkickout(true)
+       }, 1000);
+      }
+    },[logged])
+   
+  
+    console.log("sessions :",logged)
+   
 
 return(    
 <>
@@ -28,12 +43,20 @@ return(
     <Route  path="/auth" component={Auth} />
   </Switch>
   
-    {initialized && (
+    {logged && (
     <Switch>
     <Route  path="/admin" component={Admin} />
     <Route exact path="/rtl" component={RTL} />
     </Switch>
     )}
+    {kickout &&
+    (
+      <Switch>
+        <Redirect from="/" to="/auth" />
+     </Switch>
+     )
+    }
+    
     
     
 </BrowserRouter>

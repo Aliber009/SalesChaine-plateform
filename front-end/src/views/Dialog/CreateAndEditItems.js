@@ -80,7 +80,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
   
   //Creating and Editing items from Server
    const EditCreate=async()=>{
-
+    
        var query={} 
        if(source=="organizations"){
          if(mode=="edit")
@@ -117,7 +117,8 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
         }
         else if (mode=="create")
         {
-          query={name:item.name,password:item.password, email:item.email,role:item.role, company:item.company, company:item.company, accountConfirmation:item.accountConfirmation}
+         
+          query={name:item.name,password:item.password, email:item.email, role:item.role, company:item.company, company:item.company, accountConfirmation:item.accountConfirmation}
         }
         else if(mode=="delete")
         {
@@ -150,6 +151,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
          }
          else if (source=="users")
          {
+         
           const newQuery={...query,userId:res.userID}
           if(mode!="delete"){dispatch(usersActions.AddOrUpdateOne(newQuery))}
           else{dispatch(usersActions.deleteOne(newQuery))}
@@ -381,7 +383,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 renderInput={(params) => 
                 <TextField 
                 {...params} label="Role"  variant="standard"/>} 
-                onChange={e=>setItem({...item,role:e.target.value})}
+                onChange={(e,v)=>setItem({...item,role:v.label})}
                   
                  />
                 </GridItem>

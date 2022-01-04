@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 
+
 const sequelize = new Sequelize('postgres://postgres:jesuisber@localhost:5432/gps');
 sequelize
   .authenticate()

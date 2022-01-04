@@ -1,24 +1,30 @@
 
-const Device=require('../models/device')
+const Device=require('../models/device');
+const User = require('../models/user');
 
 const deviceController={
 getAll:async function(req, res) {
+    const {user} = req.locals
+    
+
     try{
-      const devices=await Device.findAll()
+      const devices=await user.getOwnerDevice();
       res.json({success: true, devices: devices});
     }
     catch{
-          res.json({success: false});
+          res.json({success: false,user:user});
         }
         //here  we need to filter the devices according the user Role and return the value, meanwhile we just return every device  
 },
 create:(req,res)=>{
-   
-    const {name,imei,organization}=req.body;
-    const newDevice = {name:name,imei:imei,organization:organization} 
     
-    Device.create(newDevice).then((device)=>{ res.json({success:true,msg:"created",deviceId:device.id}) })
-    .catch(err=>{console.log(err);res.json({success:false,msg:"failed"})})  
+    const {name,imei,organization,userId}=req.body;
+    const newDevice = {name:name,imei:imei,organization:organization} 
+    User.findOne({where:{id:userId}}).then(user=>{
+    user.createOwnerDevice(newDevice).then((device)=>{ res.json({success:true,msg:"created",deviceId:device.id}) })
+    .catch(err=>{console.log(err);res.json({success:false,msg:"failed"})})
+})
+.catch(err=>{res.json({success:false})})  
 },
 edit:(req,res)=>{
     const {deviceId,name,organization,imei}=req.body

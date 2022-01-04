@@ -1,20 +1,4 @@
-/*!
 
-=========================================================
-* Material Dashboard React - v1.10.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
@@ -28,7 +12,7 @@ import Notifications from "@material-ui/icons/Notifications";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
-import Typography from "views/Typography/Typography.js";
+import Typography from "views/Groups/Groups";
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
@@ -42,6 +26,8 @@ import ConfirmPassword from "views/Pages/ConfirmPassword";
 import Login from "views/Pages/Login";
 import Register from "views/Pages/Register";
 import UsersPage from "views/UserProfile/Users";
+import RegisterAssociate from "views/Pages/RegisterAssociate";
+import Associations from "views/Association/Associations";
 
 const dashboardRoutes = [
   {
@@ -75,6 +61,14 @@ const dashboardRoutes = [
     rtlName: "قائمة الجدول",
     icon: "content_paste",
     component: TableList,
+    layout: "/admin",
+  },
+  {
+    path: "/associations",
+    name: "Associations",
+    rtlName: "طباعة",
+    icon: LibraryBooks,
+    component: Associations,
     layout: "/admin",
   },
   {
@@ -146,6 +140,14 @@ const dashboardRoutes = [
     name: "Password Reset Confirmed",
     icon: "",
     component: ResetPasswordSuccess,
+    layout: "/auth",
+    api: true
+  },
+  {
+    path: "/registerassociate/:ml",
+    name: "Register Associate",
+    icon: "",
+    component: RegisterAssociate,
     layout: "/auth",
     api: true
   },

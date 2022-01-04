@@ -1,23 +1,20 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { sessionActions,usersActions,organizationsActions,devicesActions } from "store"
+import { sessionActions,usersActions,organizationsActions,devicesActions, groupsActions } from "store"
 import { connect } from "react-redux"
 import config from "./config";
+import { associationsActions } from "store"
 
 
 const CachingController = () => {
 const backUrl=config.WS_BASE_URL
 const dispatch=useDispatch();
-const initialized = useSelector(state => state.session.success );
-const [logged,setlogged]=useState(false)
-useEffect(()=>{
-  setlogged(initialized)
-},[initialized])
-
+const logged = useSelector(state => state.session.success );
 
 // check auth
     useEffect(async () => {
+      try{
         const response = await fetch(backUrl+'users/checkSession',{
             method: 'POST',
             headers: {
@@ -28,9 +25,11 @@ useEffect(()=>{
         if(response.ok){
             const session=await response.json()
             dispatch(sessionActions.updateSession(session.success))
-           
         }
-
+      }
+      catch{
+        return null
+      }
     },[])
  // Get all users
     useEffect(async () => {
@@ -39,6 +38,7 @@ useEffect(()=>{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'authorization':localStorage.getItem('token')
                 
                      },     
         });
@@ -55,7 +55,9 @@ useEffect(()=>{
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
-               },     
+          'authorization':localStorage.getItem('token')
+               },
+      //body:JSON.stringify({userId:JSON.parse(localStorage.getItem('user')).id})              
   });
     if (response.ok) {
       const devices=await response.json()
@@ -70,6 +72,7 @@ useEffect(()=>{
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
+        'authorization':localStorage.getItem('token')
              },     
 });
   if (response.ok) {
@@ -77,6 +80,42 @@ useEffect(()=>{
     dispatch(organizationsActions.update(organizations.organizations));
   }
   }
+}, [logged]);
+//get all groups 
+useEffect(async () => {
+  if(logged){
+  const response = await fetch(backUrl+'groups/all',{
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'authorization':localStorage.getItem('token')
+             },     
+});
+  if (response.ok) {
+    const groups=await response.json()
+    dispatch(groupsActions.update(groups.groups));
+  }
+  }
+}, [logged]);
+
+//get all associations
+useEffect(async () => {
+  if(logged){
+  const response = await fetch(backUrl+'users/findassociations',{
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'authorization':localStorage.getItem('token')
+             },
+       
+});
+  if (response.ok) {
+    const {associationsParent,associationsChildren}=await response.json()
+    dispatch(associationsActions.updateChildren(associationsChildren));
+    dispatch(associationsActions.updateParents(associationsParent));
+    dispatch(devicesActions.displayShared(associationsParent));
+  }
+}
 }, [logged]);
 
 

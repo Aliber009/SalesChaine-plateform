@@ -19,14 +19,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 import App from './App';
 import store from './store';
 
 ReactDOM.render((
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
   <Provider store={store}>
     <HashRouter>
       <App />
     </HashRouter>
   </Provider>
+  </MuiPickersUtilsProvider>
 ), document.getElementById('root'));

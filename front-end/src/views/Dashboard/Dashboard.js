@@ -30,11 +30,10 @@ import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 //import TableList from "../TableList/TableList";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,GridToolbarContainer, } from "@mui/x-data-grid";
 import { CardContent } from '@mui/material';
 import Maps from "views/Maps/Maps";
 import { useState , useEffect} from "react";
-import EditDevice from "../Dialog/CreateAndEditItems";
 import {  website, server } from "variables/general.js";
 
 import {
@@ -43,32 +42,60 @@ import {
   completedTasksChart,
 } from "variables/charts.js";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import { IconButton } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 import ReplayIcon from '@mui/icons-material/Replay';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector,useDispatch } from "react-redux";
 import EditCreateItem from "../Dialog/CreateAndEditItems";
+//DATE Time Picker
+import { RangePicker} from 'react-minimal-datetime-range';
+import 'react-minimal-datetime-range/lib/react-minimal-datetime-range.min.css';
+import { Dialog, DialogContent } from "@mui/material";
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import { useRef } from "react";
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import { Tooltip } from "@mui/material";
+import Associate from "./Associate";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddDeviceToGroup from "./addToGroup"
+import Snack from "views/Dialog/FeedSnack";
+import { position } from "stylis";
 
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard() {
+  export default function Dashboard() {
   //devices from redux Store
   const devices= useSelector(state=>state.devices.items)
-
+  const currentpositions = useSelector(state=>state.positions.items)
   const classes = useStyles();
-  const [markers,setmarkers]=useState([])
-  const [selectionModel,setSelectionModel]=useState()
+  const [selectionModel,setSelectionModel]=useState([])
   const [open,setOpen]=useState()
   const [startreplay,setStartReplay]=useState(false)
   const [mode,setmode]=useState("")
- 
-
+  const [opendate,setOpendate]=useState(false)
+  const [replayRow,setreplayRow]=useState("") 
+  const [lastpos,setlastpos]=useState()
+  const [openassociate,setopenAssociate]=useState(false)
+  const myRef = useRef()
+  const [opengroupDial,setopengroupDial]=useState(false)
+  const [snackinfo,setsnackinfo]=useState({open:false})
+  
 
   //CRUD table devices
   const columns = [
     { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
+    {
+      field: "pos",
+      headerName: "",
+      headerAlign:"center",
+      align:'center',
+      width:20,
+      sortable:false,
+      disableColumnMenu:true,
+      renderCell:(e)=>{return(<IconButton onClick={()=>{showpos(e)}}>< MyLocationIcon style={{fill:"#1C6DD0"}} /> </IconButton>)}
+    },
     {
       field: "name",
       headerName: "Device Name",
@@ -81,16 +108,16 @@ export default function Dashboard() {
       field: "imei",
       headerName: "Imei",
       headerAlign:"center",
-      width: 200,
+      width: 100,
       editable: true,
     },
     {
       field: "organization",
-      headerName: "Client Owner",
+      headerName: "Organization",
       headerAlign:"center",
       align: "left",
       type: "number",
-      width: 250,
+      width: 10,
       editable: true,
     },
     {
@@ -99,18 +126,33 @@ export default function Dashboard() {
       headerAlign:"center",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 160,
+      width: 30,
       
     },
     {
-      field: "Replay",
+      field: "shared",
+      headerName: "Client owner",
+      headerAlign:"center",
+      sortable: false,
+      width: 120,
+    },
+    /* {
+      field: "share",
       headerName: "",
       width: 20,
       align:'center',
-      
       sortable:false,
       disableColumnMenu:true,
-      renderCell:(e)=>{return(<IconButton >< ReplayIcon onClick={()=>setStartReplay(true)} style={{fill:'#1597E5'}} /> </IconButton>)}
+      renderCell:(e)=>{return( <><Tooltip title="Associate"><IconButton onClick={()=>{openAssociate()}}> <PersonAddAltIcon /></IconButton></Tooltip></> )}
+    }, */
+    {
+      field: "Replay",
+      headerName: "",
+      align:'center',
+      width:20,
+      sortable:false,
+      disableColumnMenu:true,
+      renderCell:(e)=>{return(<><Tooltip title="Replay"><IconButton onClick={()=>replayRows(e)}>< ReplayIcon  style={{fill:'#1597E5'}} /> </IconButton></Tooltip></>)}
     },
     {
       field: "Edit",
@@ -119,7 +161,7 @@ export default function Dashboard() {
       align:'center',
       sortable:false,
       disableColumnMenu:true,
-      renderCell:(e)=>{return(<IconButton onClick={()=>editRows(e)}>< ModeEditOutlinedIcon /> </IconButton>)}
+      renderCell:(e)=>{return(<><Tooltip title="Edit"><IconButton onClick={()=>editRows(e)}>< ModeEditOutlinedIcon /> </IconButton></Tooltip></>)}
     },
     {
       field: "remove",
@@ -128,7 +170,7 @@ export default function Dashboard() {
       align:'center',
       sortable:false,
       disableColumnMenu:true,
-      renderCell:(e)=>{  return(<IconButton onClick={()=>removeRows(e)}>< ClearIcon  style={{fill:'red'}} /></IconButton>)}
+      renderCell:(e)=>{  return(<><Tooltip title="Remove"><IconButton onClick={()=>removeRows(e)}>< ClearIcon  style={{fill:'red'}} /></IconButton></Tooltip></>)}
       
     },
   ];
@@ -144,14 +186,112 @@ export default function Dashboard() {
     setOpen(true);
    
  }
+ const replayRows=(e)=>{
+  setreplayRow(e.row.id)
+  setOpendate(true);
+ }
+ const showpos=(e)=>{
+   setlastpos(e.row.id.toString())
+   myRef.current.scrollIntoView({ behavior: 'smooth',  block: 'center' , inline: "start"})
+ }
+ const openAssociate=()=>{
+   
+   setopenAssociate(true)
+ }
+
 
 const [Rows,setRows]=useState({})
+
 useEffect(()=>{
 
    setRows(devices)
 
 },[devices])
-  console.log("dev",devices)
+
+
+//Replay function
+const [marks, setMarks]=useState([])
+const replaypositions=async(deviceId,from,to)=>{
+  try{
+  const res=await fetch('http://localhost:5000/api/positions/replay?deviceId='+deviceId+'&from='+from+'&to='+to)
+  if(res.ok){
+    const {positions} =await res.json()
+    //format array of positions for the map replay path 
+    var markss=[]
+    if(position.length>0)
+    {
+    const pos=positions.map(p=>markss.push([p.lat,p.lon]))
+    setMarks(markss)
+    setStartReplay(true)
+    myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    else{
+      setsnackinfo({open:true,severity:"info",message:"No positions were found during selected period"})
+    } 
+  }
+  else{setsnackinfo({open:true,severity:"error",message:"Error occuried"})}
+  }
+  catch{
+    setsnackinfo({open:true,severity:"warning",message:"Localisation server not running"})
+  }
+}
+ //custom toolbar 
+ function CustomToolbar() {
+  return (
+    <div style={{display:"inline-flex"}}>
+      <GridToolbar />
+      <Button  style={{color:"#1976d2", marginTop:3 }} startIcon={<AddCircleOutlineIcon />} 
+        onClick={()=>{
+        if(selectionModel.length==0){
+          setsnackinfo({open:true,severity:"warning",message:"Please select devices before grouping"})
+        }
+        else{
+        setopengroupDial(true)}
+      }} size="small">Add to group</Button>
+      <Button  style={{color:"#1976d2", marginTop:3 }} startIcon={<PersonAddAltIcon />} 
+        onClick={()=>{
+        if(selectionModel.length==0){
+          setsnackinfo({open:true,severity:"warning",message:"Please select devices before associating"})
+        }
+        else{
+        setopenAssociate(true)}
+      }} size="small">Associate to Account</Button>
+    </div>
+  );
+}
+
+
+
+const DateTimeReplay=(deviceId) => {
+
+  
+  return (
+    <Dialog
+    open={opendate}
+    onClose={()=>{setOpendate(false)}}
+    aria-labelledby="Range picker"
+    aria-describedby="Rg" 
+  > 
+  <RangePicker
+  locale="en-us" // default is en-us
+  show={false} // default is false
+  disabled={false} // default is false
+  allowPageClickToClose={false} // default is true
+  onConfirm={res => {
+
+    var rs=res.map(date=>new Date(date).toISOString());
+    replaypositions(deviceId,rs[0],rs[1])
+    setOpendate(false)
+  
+  }}
+  onClear={() => console.log('onClear')}
+  style={{ width: 520, height: 405, }}
+  placeholder={['Start Time', 'End Time']}
+  showOnlyTime={false} // default is false, only select time
+  />
+    </Dialog>
+  );
+}
   const rows = [
     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35,fullName:"Connecté",lat:32.249921938982624,lon:-7.968 },
     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 ,fullName:"Connecté",lat:31.249921938982624,lon:-7.92},
@@ -316,7 +456,8 @@ useEffect(()=>{
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={12} >
+        <GridItem xs={12}  >
+          <div ref={myRef} >
           <CustomTabs
             title="Tasks:"
             headerColor="primary"
@@ -325,7 +466,7 @@ useEffect(()=>{
                 tabName: "Map",
                 tabIcon: BugReport,
                 tabContent: (
-                  <Maps markers={markers} startAnimation={startreplay}/>
+                  <Maps markers={lastpos} startAnimation={startreplay} routes={marks} />
                 ),
               },
               {
@@ -352,6 +493,7 @@ useEffect(()=>{
               },
             ]}
           />
+          </div>
         </GridItem>
         
         <GridItem xs={12} >
@@ -366,27 +508,18 @@ useEffect(()=>{
                 <div style={{height:600,backgroundColor:"#FFF"}}>
                 <DataGrid
             components={{
-            Toolbar: GridToolbar}}
+            Toolbar: CustomToolbar}}
+       
             rows={Rows}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
             onSelectionModelChange={(newSelectionModel) => {
               setSelectionModel(newSelectionModel);
-              var markers=[]
-              addedRows.map(row=>{
-                if(newSelectionModel.includes(row.id))
-                {
-                  markers.push([row.lat,row.lon])
-                }
-              }
-              )
-              setmarkers(markers)
-              
             }}
             selectionModel={selectionModel}
-            checkboxSelection
             disableSelectionOnClick
+            checkboxSelection
              /> 
                 </div>
                
@@ -400,6 +533,10 @@ useEffect(()=>{
       <div style={{display:"none"}}>
       <EditCreateItem mode={mode}  source={"devices"} open={open} setOpen={setOpen} row={sendRow}  /> 
      </div>
+     <Associate open={openassociate} setopen={setopenAssociate} ids={selectionModel} />
+     <AddDeviceToGroup open={opengroupDial} setOpen={setopengroupDial} row={selectionModel} />
+     <Snack opensnack={snackinfo.open} setopensnack={setsnackinfo} severity={snackinfo.severity} message={snackinfo.message} />
+     {DateTimeReplay(replayRow)}
     </div>
   );
 }

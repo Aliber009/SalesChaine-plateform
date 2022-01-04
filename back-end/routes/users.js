@@ -24,11 +24,13 @@ router.post('/create', reqAuth, userController.create);
 router.post('/delete',userController.delete);
 router.post('/confirm/:id', userController.confirm);
 router.post('/login', userController.login);
-router.post('/checkSession', reqAuth, function(req, res) {
+router.post('/checkSession', reqAuth,function(req, res) {
   
   res.json({success: true});
 });
 router.post('/logout', reqAuth, userController.logout);
-
+router.post('/associate',userController.associate);
+router.post('/findassociations',reqAuth,userController.findAssociations);
+router.post('/removeDeviceAssociations',userController.removeDeviceAssociations);
 
 module.exports = router;

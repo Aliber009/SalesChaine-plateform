@@ -17,11 +17,13 @@ import {
     Col
 } from "reactstrap";
 import Toast from 'react-bootstrap/Toast'
-import {register} from "../../network/ApiAxios";
+import {registerassociate} from "../../network/ApiAxios";
 import config from "../../config";
+import { useParams } from "react-router-dom";
 
-const Register = () => {
-
+const RegisterAssociate = () => {
+    const {ml}=useParams()
+    console.log(ml)
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,7 +33,14 @@ const Register = () => {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("Email sent! Check it to Comfirm ^ ^.");
     const [userID, setUserID] = useState(null);
-
+    //string hex conv
+    const  hex2a=(hexx) => {
+        var hex = hexx.toString();//force conversion
+        var str = '';
+        for (var i = 0; i < hex.length; i += 2)
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    }
     const registerUser = async () => {
         if (!(name && email && password && confirmPassword && checkbox)) {
             setError("Make sure to fill all the inputs and agree to the privacy policy");
@@ -42,7 +51,7 @@ const Register = () => {
             setError("Passwords do not match");
             return;
         }
-        const response = await register(name, email, password);
+        const response = await registerassociate(name, email, password);
         const {data} = response;
         if (!data.success) {
             setError(data.msg);
@@ -75,26 +84,6 @@ const Register = () => {
                     zIndex: 50
                 }}
             >
-                <Toast style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    backgroundColor: "white",
-                    padding: 10,
-                    borderRadius: 10
-                }} onClose={() => setShowToast(false)} show={showToast} delay={10000} autohide={!config.DEMO}>
-                    <Toast.Header>
-                        <span> Nextronic - DigiEye team  </span>
-                       {/*  <img style={{height: "30px", width: "100px"}} src={require("assets/img/brand/argon-react.png").default}  alt="..."/> */}
-                    </Toast.Header>
-                    <Toast.Body>
-                        {toastMessage}
-                        {config.DEMO ?
-                            <a href={config.DOMAIN_NAME + '/auth/confirm-email/' + userID}>
-                                {config.DOMAIN_NAME + '/auth/confirm-email/' + userID}
-                            </a> : null}
-                    </Toast.Body>
-                </Toast>
             </div>
             <Col lg="6" md="8">
                 <Card className="bg-secondary shadow border-0">
@@ -157,8 +146,8 @@ const Register = () => {
                                             <i className="ni ni-email-83"/>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input placeholder="Email" type="email" autoComplete="new-email" value={email}
-                                           onChange={e => setEmail(e.target.value)}
+                                    <Input placeholder="Email" type="email" autoComplete="new-email" value={hex2a(ml)}
+                                           
                                     />
                                 </InputGroup>
                             </FormGroup>
@@ -230,4 +219,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default RegisterAssociate;

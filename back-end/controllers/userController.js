@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/keys');
 const ActiveSession = require('../models/activeSession');
 const {smtpConf} = require('../config/smpt');
+const Device = require('../models/device');
+
+
 
 const userController={
 
@@ -27,7 +30,7 @@ getAll: async function(req, res) {
 create:(req, res) => {
     const {name, email, password,accountConfirmation,role,company} = req.body;
   
-    User.findOne({email: email}).then((user) => {
+    User.findOne({where:{email: email}}).then((user) => {
       if (user) {
         res.json({success: false, msg: 'Email already exists'});
       } else if (password.length < 6) {
@@ -37,7 +40,7 @@ create:(req, res) => {
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(password, salt, null, (err, hash) => {
             if (err) throw err;
-            const query = {name: name, email: email,accountConfirmation:accountConfirmation,role:role,company:company,
+            const query = {name: name, email: email,accountConfirmation:accountConfirmation,role: role,company: company,
               password: hash};
              User.create(query)
              .then(user=>{res.json({success: true, userID: user.id, msg: 'The user was succesfully registered'})})
@@ -163,8 +166,7 @@ register:(req, res) => {
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(password, salt, null, (err, hash) => {
             if (err) throw err;
-            const query = {name: name, email: email,
-              password: hash};
+            const query = {name: name, email: email, password: hash, role:"USER"};
              User.create(query)
              .then( async (user)=>{
               const transporter = nodemailer.createTransport(smtpConf);
@@ -179,7 +181,7 @@ register:(req, res) => {
                   html: '<h1>Hey</h1><br><p>Confirm your new account </p><p><a href="' + 'http://localhost:3000/auth/confirm-email/' + user.id + '">"' + 'http://localhost:3000/auth/confirm-email/' + user.id + '"</a><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
                 });
                 // eslint-disable-next-line max-len
-                await res.json({success: true, msg: 'Comfirmation mail has been sent  '});
+                 res.json({success: true, msg: 'Comfirmation mail has been sent  '});
               }
               // eslint-disable-next-line max-len
               res.json({success: true, userID: user.id, msg: 'The user was succesfully registered'});
@@ -241,13 +243,141 @@ login:(req, res) => {
     })
     .catch(err=>{res.json({success:false,msg:"cant log in"})})
 },
-logout:function(req, res) {
-    const token = req.body.token;
-    ActiveSession.destroy({where:{token: token}})
-   .then(()=>{  res.json({success: true}) })
-   .catch(()=>{ res.json({success: false}); })
+logout:async(req, res) => {
+    const {user}=req.locals
+    try{
+    await ActiveSession.destroy({where:{userId: user.id}})
+    res.json({success:true})
+    }
+    catch{
+      res.json({success:false})
+    }
+   
+},
+associate:(req,res)=>{
+  const { email, userId ,deviceId } = req.body
+  //convert mail to hex
+  const String2Hex=(tmp) => {
+    var str = '';
+    for(var i = 0; i < tmp.length; i++) {
+        str += tmp[i].charCodeAt(0).toString(16);
+    }
+    return str;
 }
 
+  const transporter = nodemailer.createTransport(smtpConf);
+  User.findOne({where:{email: email}})
+    .then(async (user)=>{
+      if(user){
+      try{
+      /* await transporter.sendMail({
+        from: '"Nextronic" <' + smtpConf.auth.user + '>',
+        to: email, // list of receivers
+        subject: 'Nextronic, Product Association', // Subject line
+        // eslint-disable-next-line max-len
+        html: '<h1>Hey</h1><br><p>You are invited to associate to product from :  </p><p><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
+      }); */
+         await user.addDevice(deviceId, { through: { giverId: userId }})
+         
+         
+        
+        //await user.addDevice(deviceId); 
+        res.json({success:true,msg:"Association email has been sent "})
+      }
+      catch{
+        await res.json({success:false,msg:"Error Occuried"})
+      }
+    }
+      else{
+        await transporter.sendMail({
+          from: '"Nextronic" <' + smtpConf.auth.user + '>',
+          to: email, // list of receivers
+          subject: 'Nextronic, Product Association', // Subject line
+          html: '<h1>Hey</h1><br><p>You are invited to associate to product from : ! You need to create account first via this link : <a href="' + 'http://localhost:3000/auth/registerassociate/' + String2Hex(email) +'&'+userId+ '"> Register As Associate </a><br></br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
+      });
+      await res.json({success:true,msg:"Association email has been sent! Invited user must register"})
+      }
+    })
+    .catch(err=>{res.json({success:false,msg:err})})
+ },
+ findAssociations:(req,res)=>{
+   const {user} = req.locals
+   User.findOne({where:{id:user.id}})
+   .then(async user=>{
+     //search assoctiated
+     const devUser=await user.getAssociated();
+     var lischildren=[];
+     var checkduplicatesChil=[]
+     
+     for(var i=0;i<devUser.length;i++)
+     {
+      const dev=await devUser[i].getDevices();
+      
+      if(checkduplicatesChil.includes(devUser[i].id)==false){
+      checkduplicatesChil.push(devUser[i].id);
+      lischildren.push({id:devUser[i].id,name:devUser[i].name,email:devUser[i].email,Devices:dev})
+      }
+     }
+     //search parents
+     const devParent= await user.getParents();
+     var lisparents=[];
+     var checkduplicatesPar=[]
+     for(var i=0;i<devParent.length;i++)
+     {
+      const dev=await user.getDevices({through:{model:devParent[i]}});
+      if(checkduplicatesPar.includes(devParent[i].id)==false){
+      checkduplicatesPar.push(devParent[i].id);
+      lisparents.push({id:devParent[i].id,name:devParent[i].name,email:devParent[i].email,Devices:dev})
+     }
+    }
+     // response of both parents and children devices 
+      res.json({success:true,associationsChildren:lischildren,associationsParent:lisparents})
 
+   })
+   .catch(err=>{res.json({success:false,msg:err})})
+
+ },
+ removeDeviceAssociations:(req,res)=>{
+  const {associatedUserId,deviceIds} = req.body;
+  User.findOne({where:{id:associatedUserId}})
+  .then(async user=>{
+    //remove associated devices with ids 
+    try{
+     await user.removeDevice(deviceIds)
+     res.json({success:true,msg:"Devices were dessociate from this user"})
+    }
+    catch{
+      res.json({success:false,msg:"Error Occuried"})
+    }
+
+  })
+  .catch(err=>{res.json({success:false,msg:err})})
+
+},
+ registerAsAssociciate:(req,res)=>{
+  const {name, email, password} = req.body;
+  
+  User.findOne({where:{email: email}}).then((user) => {
+    if (user) {
+      res.json({success: false, msg: 'Email already exists'});
+    } else if (password.length < 6) {
+      res.json({success: false, msg: 'Password must be at least 6 characters long'});
+    } else {
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, null, (err, hash) => {
+          if (err) throw err;
+          const query = {name: name, email: email, password: hash, role:"USER",accountConfirmation:true};
+           User.create(query)
+           .then((user)=>{
+               res.json({success: true, msg: 'Associate user registered succesfully'});
+            })
+            .catch(err=>{res.json({msg:err})})
+         
+        });
+      });
+    }
+  });
+
+ }
 }
 module.exports=userController

@@ -3,13 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 const { reducer, actions } = createSlice({
   name: 'positions',
   initialState: {
-    items: [],
+    items: {},
   },
   reducers: {
     update(state, action) {
       //state.items.push({action.payload['deviceId']:action.pay})
-      state.items[action.payload['deviceId']] = action.payload;
-      console.log("pos",action.payload)
+      const id=action.payload["deviceId"]
+      state.items[id] = [parseFloat(action.payload.lat),parseFloat(action.payload.lon)];
+      //console.log("pos",state.items)
     },
   }
 });
