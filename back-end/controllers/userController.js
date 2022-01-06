@@ -7,6 +7,11 @@ const config = require('../config/keys');
 const ActiveSession = require('../models/activeSession');
 const {smtpConf} = require('../config/smpt');
 const Device = require('../models/device');
+//redis
+const { v4 } = require('uuid');
+const AssociationQuery =require('../models/associationQuery')
+
+
 
 
 
@@ -216,6 +221,7 @@ login:(req, res) => {
         return  res.json({success: false, msg: 'Account is not confirmed'});
       }
       bcrypt.compare(password, user.password, async function(err, isMatch) {
+        console.log("user",user)
         if (isMatch) {
           const token = jwt.sign(user, config.secret, {
             expiresIn: 86400, // 1 week
@@ -254,46 +260,44 @@ logout:async(req, res) => {
     }
    
 },
-associate:(req,res)=>{
-  const { email, userId ,deviceId } = req.body
-  //convert mail to hex
-  const String2Hex=(tmp) => {
-    var str = '';
-    for(var i = 0; i < tmp.length; i++) {
-        str += tmp[i].charCodeAt(0).toString(16);
-    }
-    return str;
-}
-
+associate: async (req,res)=>{
+ 
+  const uuID = v4();
+  const {user}=req.locals
+  const userId=user.id
+  //console.log("uuuid",uuID)
+  const { email, deviceId} = req.body
+  //set in Redis as key value: 
+  //const client = await redis.createClient();
+  
+ 
   const transporter = nodemailer.createTransport(smtpConf);
   User.findOne({where:{email: email}})
     .then(async (user)=>{
       if(user){
       try{
-      /* await transporter.sendMail({
+       await transporter.sendMail({
         from: '"Nextronic" <' + smtpConf.auth.user + '>',
         to: email, // list of receivers
         subject: 'Nextronic, Product Association', // Subject line
         // eslint-disable-next-line max-len
         html: '<h1>Hey</h1><br><p>You are invited to associate to product from :  </p><p><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
-      }); */
+      }); 
          await user.addDevice(deviceId, { through: { giverId: userId }})
-         
-         
-        
-        //await user.addDevice(deviceId); 
-        res.json({success:true,msg:"Association email has been sent "})
+         //await user.addDevice(deviceId); 
+        res.json({success:true,msg:"Association notification has been sent through mail"})
       }
       catch{
         await res.json({success:false,msg:"Error Occuried"})
       }
     }
       else{
+        await AssociationQuery.create({key:uuID,info:JSON.stringify({giverId:userId,email:email,deviceIds:deviceId})})
         await transporter.sendMail({
           from: '"Nextronic" <' + smtpConf.auth.user + '>',
           to: email, // list of receivers
           subject: 'Nextronic, Product Association', // Subject line
-          html: '<h1>Hey</h1><br><p>You are invited to associate to product from : ! You need to create account first via this link : <a href="' + 'http://localhost:3000/auth/registerassociate/' + String2Hex(email) +'&'+userId+ '"> Register As Associate </a><br></br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
+          html: '<h1>Hey</h1><br><p>You are invited to associate to product from : ! You need to create account first via this link : <a href="' + 'http://localhost:3000/auth/registerassociate/'+uuID+'"> Register As Associate </a><br></br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
       });
       await res.json({success:true,msg:"Association email has been sent! Invited user must register"})
       }
@@ -354,9 +358,12 @@ associate:(req,res)=>{
   .catch(err=>{res.json({success:false,msg:err})})
 
 },
- registerAsAssociciate:(req,res)=>{
-  const {name, email, password} = req.body;
-  
+ registerAsAssociciate:async (req,res)=>{
+  const {name, password, key} = req.body;
+  try{
+  const associationInfo=await AssociationQuery.findOne({where:{key:key}})
+  const {email,giverId,deviceIds}=JSON.parse(associationInfo.info)
+
   User.findOne({where:{email: email}}).then((user) => {
     if (user) {
       res.json({success: false, msg: 'Email already exists'});
@@ -368,16 +375,25 @@ associate:(req,res)=>{
           if (err) throw err;
           const query = {name: name, email: email, password: hash, role:"USER",accountConfirmation:true};
            User.create(query)
-           .then((user)=>{
+           .then(async(userr) =>{
+               
+               await userr.addDevice(deviceIds,{through:{giverId:parseInt(giverId)}})
+               await AssociationQuery.destroy({where:{key:key}})
                res.json({success: true, msg: 'Associate user registered succesfully'});
             })
-            .catch(err=>{res.json({msg:err})})
+            .catch(err=>{res.json({sucess:false,msg:"Error occuried"})})
          
         });
       });
     }
   });
+}
+catch{
+  res.json({msg:"key not found or expired ",success:false })
+}
 
- }
+ },
+
+ 
 }
 module.exports=userController

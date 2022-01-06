@@ -22,6 +22,7 @@ const sequelize=require('../config/sequelize')
 //One to one 
 
 Device.belongsTo(Organization, {foreignKey: 'organization'});
+
 //One to many : check Groupe has many => check groups
 
    

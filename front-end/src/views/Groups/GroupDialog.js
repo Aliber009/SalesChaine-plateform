@@ -78,6 +78,7 @@ const EditCreateGroup=({open,setOpen,mode,row})=> {
          method:'POST',
          headers:{
            "Content-Type":"Application/json",
+           'authorization':localStorage.getItem('token')
           },
          body:JSON.stringify(query)
         

@@ -5,8 +5,9 @@ const Group=require("../models/group")
 
 const groupController={
 getgroups:async (req,res)=>{
+    const {user}=req.locals
         try{
-        const groups=await Group.findAll({attributes:["id","name"]})
+        const groups=await user.getOwnerGroup({attributes:['id','name']});
         res.json({success:true,groups:groups})
         }
         catch{
@@ -14,20 +15,34 @@ getgroups:async (req,res)=>{
         }
     },
 getAll:async (req,res)=>{
+    const {user}=req.locals
     try{
-    const groups=await Group.findAll({include:{model:Device, attributes:["id","name","imei","organization"]}})
-    res.json({success:true,groups:groups})
+    const groups= await user.getOwnerGroup()
+    var grdev=[]
+    for(var i=0;i<groups.length;i++)
+    {
+        const devs=await groups[i].getDevices();
+        grdev.push({id:groups[i].id,name:groups[i].name,Devices:devs})
+    }
+    //const groups=await user.OwnerGroup.findAll({include:{model:Device, attributes:["id","name","imei","organization"]}})
+    res.json({success:true,groups:grdev})
     }
     catch{
         res.json({success:false})
     }
 },
-create:(req,res)=>{
+create:async (req,res)=>{
+    const {user}=req.locals
     const {name}=req.body;
     const query={name:name}
-    Group.create(query)
-    .then((groupe)=>{res.json({success:true,msg:'groups has been created',groupeId:groupe.id})})
-    .catch(()=>{res.json({succes:false})})
+    try{
+    const group=await user.createOwnerGroup(query)
+    res.json({success:true,msg:'groups has been created',groupeId:groupe.id})
+    }
+    catch{
+        res.json({succes:false})
+    }
+   
 },    
 addDevices:(req,res)=>{
     const {deviceIds,groupeId}=req.body;

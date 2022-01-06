@@ -161,7 +161,7 @@ const [rows,setRows]=useState([])
               Here is a subtitle for this table
             </p>
           </CardHeader>
-          <CardBody style={{height:'800px'}}>
+          <CardBody style={{height:800}}>
             
               
           <DataGrid

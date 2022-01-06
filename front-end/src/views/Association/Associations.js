@@ -75,7 +75,7 @@ const useStyles = makeStyles(styles);
 export default function Associations() {
 
 //columns and rows
-const columns = [
+const columnsChild = [
   { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
   {
     field: "name",
@@ -118,14 +118,53 @@ const columns = [
    disableColumnMenu:true,
    renderCell:(e)=>{ 
      return(
+       
      <>
+     
      <Tooltip title="Remove Association">
        <IconButton onClick={()=>removeAssociationDevice(e.row.id)}>< PersonRemoveIcon  style={{fill:'red'}} />
        </IconButton>
      </Tooltip>
+     
     </>)}
       
    
+  },
+];
+const columnsParent = [
+  { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
+  {
+    field: "name",
+    headerName: "Device Name",
+    headerAlign:"center",
+    align: "left",
+    width: 200,
+    editable: true,
+  },
+  {
+    field: "imei",
+    headerName: "Imei",
+    headerAlign:"center",
+    width: 100,
+    editable: true,
+  },
+  {
+    field: "organization",
+    headerName: "Client Owner",
+    headerAlign:"center",
+    align: "left",
+    type: "number",
+    width: 120,
+    editable: true,
+  },
+  {
+    field: "fullName",
+    headerName: "Connecté",
+    headerAlign:"center",
+    description: "This column has a value getter and is not sortable.",
+    sortable: false,
+    width: 100,
+    
   },
 ];
 
@@ -196,7 +235,7 @@ const columns = [
    const ids=devices.map(i=>i.id)
    return ids
   } 
-  const formateDataToTables=(d)=>{
+  const formateDataToTables=(d,columns)=>{
     
     if(d){
     return(
@@ -252,21 +291,19 @@ const columns = [
               Here are the accounts that you associate devices with 
             </p>
           </CardHeader>
-          <CardBody style={{height:'800px'}}> 
+          <CardBody style={{maxHeight: 800}}>  
           <List
          sx={{ width: '100%', bgcolor: 'background.paper' }}
          component="nav"
          aria-labelledby="nested-list-subheader"
          >
-          {formateDataToTables(dataChildren)}
+          {formateDataToTables(dataChildren,columnsChild)}
         </List>
         </CardBody>
         </Card>
       </GridItem>
     </GridContainer>
-       <Fab onClick={()=>{setmode("create");setOpenDial(true)}} style={{ marginLeft:-20,marginTop:-100}}   color="primary" aria-label="add">
-       <AddIcon />
-     </Fab>
+       
      <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card >
@@ -276,21 +313,19 @@ const columns = [
               Here are the accounts that associate their devices with you
             </p>
           </CardHeader>
-          <CardBody style={{height:'800px'}}> 
+          <CardBody style={{maxHeight: 800}}> 
           <List
          sx={{ width: '100%', bgcolor: 'background.paper' }}
          component="nav"
          aria-labelledby="nested-list-subheader"
          >
-          {formateDataToTables(dataParents)}
+          {formateDataToTables(dataParents,columnsParent)}
         </List>
         </CardBody>
         </Card>
       </GridItem>
     </GridContainer>
-       <Fab onClick={()=>{setmode("create");setOpenDial(true)}} style={{ marginLeft:-20,marginTop:-100}}   color="primary" aria-label="add">
-       <AddIcon />
-     </Fab>
+       
      <Snack opensnack={snackinfo.open} setopensnack={setsnackinfo} severity={snackinfo.severity} message={snackinfo.message} />
      </>
   );

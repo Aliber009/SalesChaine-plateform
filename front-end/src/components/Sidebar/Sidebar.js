@@ -100,7 +100,7 @@ export default function Sidebar(props) {
         );
       })}
         
-            <ListItem  style={{marginTop:180, backgroundColor:"#EC255A"}}>
+            <ListItem  style={{ backgroundColor:"#EC255A"}}>
              <ListItemButton onClick={trylogout} >
               <ListItemIcon style={{marginLeft:50}} className={ classes.whiteFont } >
                 <LogoutIcon className={ classes.whiteFont } />

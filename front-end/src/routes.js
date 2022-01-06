@@ -28,6 +28,8 @@ import Register from "views/Pages/Register";
 import UsersPage from "views/UserProfile/Users";
 import RegisterAssociate from "views/Pages/RegisterAssociate";
 import Associations from "views/Association/Associations";
+import GroupsIcon from '@mui/icons-material/Groups';
+import FolderIcon from '@mui/icons-material/Folder';
 
 const dashboardRoutes = [
   {
@@ -67,7 +69,7 @@ const dashboardRoutes = [
     path: "/associations",
     name: "Associations",
     rtlName: "طباعة",
-    icon: LibraryBooks,
+    icon: GroupsIcon,
     component: Associations,
     layout: "/admin",
   },
@@ -75,7 +77,7 @@ const dashboardRoutes = [
     path: "/typography",
     name: "Groups",
     rtlName: "طباعة",
-    icon: LibraryBooks,
+    icon: FolderIcon,
     component: Typography,
     layout: "/admin",
   },

@@ -1,5 +1,5 @@
 
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 // reactstrap components
 import {
@@ -17,32 +17,34 @@ import {
     Col
 } from "reactstrap";
 import Toast from 'react-bootstrap/Toast'
+import Snack from "views/Dialog/FeedSnack";
 import {registerassociate} from "../../network/ApiAxios";
 import config from "../../config";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const RegisterAssociate = () => {
     const {ml}=useParams()
-    console.log(ml)
+    const history=useHistory()
     const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    //const [email, setEmail] = useState(hex2a(params[0]));
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [checkbox, setCheckbox] = useState(false);
     const [error, setError] = useState("");
+    const [snackinfo,setsnackinfo]=useState({open:false})
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("Email sent! Check it to Comfirm ^ ^.");
     const [userID, setUserID] = useState(null);
-    //string hex conv
-    const  hex2a=(hexx) => {
-        var hex = hexx.toString();//force conversion
-        var str = '';
-        for (var i = 0; i < hex.length; i += 2)
-            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-        return str;
-    }
+    //for query associations info
+    
+    
+
+   
     const registerUser = async () => {
-        if (!(name && email && password && confirmPassword && checkbox)) {
+              
+        
+        if (!(name  && password && confirmPassword && checkbox)) {
             setError("Make sure to fill all the inputs and agree to the privacy policy");
             return;
         }
@@ -51,9 +53,14 @@ const RegisterAssociate = () => {
             setError("Passwords do not match");
             return;
         }
-        const response = await registerassociate(name, email, password);
+        const response = await registerassociate(name, password , ml );
+         
         const {data} = response;
+        /* if(data.success){
+          const aso = await associateafterregister(key)
+        } */
         if (!data.success) {
+            setsnackinfo({open:true,severity:"error",message:"something went wrong"})
             setError(data.msg);
             return;
         }
@@ -63,11 +70,13 @@ const RegisterAssociate = () => {
         }
         setError("");
         setName("");
-        setEmail("");
+        //setEmail("");
         setPassword("");
         setConfirmPassword("");
         setCheckbox(false);
         setShowToast(true);
+        setsnackinfo({open:true,severity:"success",message:"Associate registred succesfully"})
+        history.push('/auth/login');
     };
 
     return (
@@ -146,7 +155,7 @@ const RegisterAssociate = () => {
                                             <i className="ni ni-email-83"/>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input placeholder="Email" type="email" autoComplete="new-email" value={hex2a(ml)}
+                                    <Input placeholder="Email" type="email" autoComplete="new-email" value={"Email already taken"}
                                            
                                     />
                                 </InputGroup>
@@ -215,6 +224,7 @@ const RegisterAssociate = () => {
                     </CardBody>
                 </Card>
             </Col>
+            <Snack opensnack={snackinfo.open} setopensnack={setsnackinfo} severity={snackinfo.severity} message={snackinfo.message} />
         </>
     );
 };

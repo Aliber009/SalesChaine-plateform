@@ -6,7 +6,7 @@ const reqAuth = require('../middlewares/safeRoutes').reqAuth;
 
 
 router.post('/all',reqAuth,deviceController.getAll );
-router.post('/create',deviceController.create ) 
+router.post('/create',reqAuth,deviceController.create ) 
 router.post('/edit',deviceController.edit);
 router.post('/delete',deviceController.delete);
 

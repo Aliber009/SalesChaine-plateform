@@ -52,10 +52,12 @@ export const edit = async (userID, name, email) => (
 );
 export const associate = async (email, deviceId) => {
     //get senderUser Id 
-      const user=localStorage.getItem("user")
-      const userId=JSON.parse(user).id
-      return await instance.post('users/associate',  {email, deviceId,userId})
+      return await instance.post('users/associate',  {email, deviceId})
 };
-export const registerassociate = async (name, email, password, phone, agency, role) => (
-    await instance.post('users/registerassociate',  {name, email, password, phone, agency, role})
+export const registerassociate = async (name, password, key) => (
+    await instance.post('users/registerassociate',  {name, password, key  })
 );
+export const associateafterregister = async ( key ) => (
+    await instance.post('users/associatewhenregister',  { key })
+);
+

@@ -46,7 +46,12 @@ const AddDeviceToGroup=({open,setOpen,mode,row})=> {
 
   //state of added Item
   useEffect(async ()=>{
-      const res=await fetch('http://localhost:5100/api/groups/allgroups')
+      const res=await fetch('http://localhost:5100/api/groups/allgroups',{
+        method:'GET',
+        headers:{
+          "Content-Type":"Application/json",
+          'authorization':localStorage.getItem('token')
+         }})
       if(res.ok){ 
           const {groups}=await res.json()
 
@@ -79,6 +84,7 @@ const AddDeviceToGroup=({open,setOpen,mode,row})=> {
          method:'POST',
          headers:{
            "Content-Type":"Application/json",
+           
           },
          body:JSON.stringify(query)
         

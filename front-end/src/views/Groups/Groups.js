@@ -186,12 +186,12 @@ export default function TypographyPage() {
       <GridItem xs={12} sm={12} md={12}>
         <Card >
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>Groups</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
+              Here are the devices groups
             </p>
           </CardHeader>
-          <CardBody style={{height:'800px'}}> 
+          <CardBody style={{maxHeight: 800}}>  
           <List
          sx={{ width: '100%', bgcolor: 'background.paper' }}
          component="nav"

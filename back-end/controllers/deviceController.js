@@ -16,15 +16,20 @@ getAll:async function(req, res) {
         }
         //here  we need to filter the devices according the user Role and return the value, meanwhile we just return every device  
 },
-create:(req,res)=>{
-    
-    const {name,imei,organization,userId}=req.body;
+create:async (req,res)=>{
+    const {user} = req.locals
+    const {name,imei,organization}=req.body;
     const newDevice = {name:name,imei:imei,organization:organization} 
-    User.findOne({where:{id:userId}}).then(user=>{
-    user.createOwnerDevice(newDevice).then((device)=>{ res.json({success:true,msg:"created",deviceId:device.id}) })
-    .catch(err=>{console.log(err);res.json({success:false,msg:"failed"})})
-})
-.catch(err=>{res.json({success:false})})  
+    
+    try
+    {
+    const newdevice=await user.createOwnerDevice(newDevice);
+    res.json({success:true,msg:"created",deviceId:newdevice.id})
+     }
+    catch(err)
+    {
+        console.log(err);res.json({success:false,msg:"failed"})
+    }
 },
 edit:(req,res)=>{
     const {deviceId,name,organization,imei}=req.body

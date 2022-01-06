@@ -29,8 +29,11 @@ router.post('/checkSession', reqAuth,function(req, res) {
   res.json({success: true});
 });
 router.post('/logout', reqAuth, userController.logout);
-router.post('/associate',userController.associate);
+router.post('/associate',reqAuth,userController.associate);
 router.post('/findassociations',reqAuth,userController.findAssociations);
 router.post('/removeDeviceAssociations',userController.removeDeviceAssociations);
+router.post('/registerassociate',userController.registerAsAssociciate);
+
+
 
 module.exports = router;

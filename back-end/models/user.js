@@ -6,6 +6,7 @@ const sequelize=require('../config/sequelize')
 // const User_user_device = require('./User_user_device');
 const Device = require('./device');
 const { values } = require('sequelize/lib/operators');
+const Group = require('./group');
 
  
 
@@ -55,6 +56,12 @@ Device.belongsToMany(User, { through: UserDevice })
 //may to many user-device to get the creators only 
 User.belongsToMany(Device, {as:"OwnerDevice", through: 'User_Device' });
 Device.belongsToMany(User, { through: 'User_Device' })
+//many to many with groups
+User.belongsToMany(Group, {as:"OwnerGroup", through: 'User_group' });
+Group.belongsToMany(User, { through: 'User_group' })
+
+
+
 
 sequelize.sync();
 module.exports=User

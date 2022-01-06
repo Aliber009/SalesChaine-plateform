@@ -37,9 +37,9 @@ require('dotenv').config();
 // Instantiate express
 const app = express();
 app.use(compression());
-
 // Passport Config
 require('./config/passport')(passport);
+
 
 // DB Config
 
