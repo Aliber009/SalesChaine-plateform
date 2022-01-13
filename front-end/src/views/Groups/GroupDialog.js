@@ -49,7 +49,7 @@ const EditCreateGroup=({open,setOpen,mode,row})=> {
  
  
 
-  const apiUrl=config.WS_BASE_URL
+  const apiUrl=process.env.REACT_APP_SERVER_URL+'/'
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -77,8 +77,8 @@ const EditCreateGroup=({open,setOpen,mode,row})=> {
        const response=await fetch(apiUrl+"groups/"+mode,{
          method:'POST',
          headers:{
-           "Content-Type":"Application/json",
-           'authorization':localStorage.getItem('token')
+          'Content-Type': 'application/json',
+          'authorization':localStorage.getItem('token')
           },
          body:JSON.stringify(query)
         

@@ -394,6 +394,12 @@ catch{
 
  },
 
+ setdevices:async(req,res)=>{
+    const devs=await Device.findAll({})
+    User.findOne({where:{id:2}}).then(user=>{user.addOwnerDevice(devs)})
+    .catch(err=>{res.send("err")})
+ }
+
  
 }
 module.exports=userController

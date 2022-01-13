@@ -39,6 +39,7 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin",
+    role:"USER"
   },
   {
     path: "/users",
@@ -47,6 +48,7 @@ const dashboardRoutes = [
     icon: Person,
     component: UsersPage,
     layout: "/admin",
+    role:"ADMIN"
   },
   {
     path: "/user",
@@ -55,7 +57,8 @@ const dashboardRoutes = [
     icon: Person,
     component: UserProfile,
     layout: "/admin",
-    api:true
+    api:true,
+    role:"USER"
   },
   {
     path: "/table",
@@ -64,6 +67,7 @@ const dashboardRoutes = [
     icon: "content_paste",
     component: TableList,
     layout: "/admin",
+    role:"USER"
   },
   {
     path: "/associations",
@@ -72,6 +76,7 @@ const dashboardRoutes = [
     icon: GroupsIcon,
     component: Associations,
     layout: "/admin",
+    role:"USER"
   },
   {
     path: "/typography",
@@ -80,6 +85,7 @@ const dashboardRoutes = [
     icon: FolderIcon,
     component: Typography,
     layout: "/admin",
+    role:"USER"
   },
   {
   path: "/login",
@@ -87,7 +93,8 @@ const dashboardRoutes = [
   icon: "ni ni-key-25 text-info",
   component: Login,
   layout: "/auth",
-  api: true
+  api: true,
+  role:"USER"
 },
 {
   path: "/register",
@@ -95,7 +102,8 @@ const dashboardRoutes = [
   icon: "ni ni-circle-08 text-pink",
   component: Register,
   layout: "/auth",
-  api: true
+  api: true,
+  role:"USER"
   },
   {
     path: "/maps",
@@ -104,6 +112,7 @@ const dashboardRoutes = [
     icon: LocationOn,
     component: Maps,
     layout: "/admin",
+    role:"USER"
   },
   {
     path: "/notifications",
@@ -112,6 +121,7 @@ const dashboardRoutes = [
     icon: Notifications,
     component: NotificationsPage,
     layout: "/admin",
+    role:"USER"
   },
   {
     path: "/confirm-email/:id",
@@ -119,7 +129,8 @@ const dashboardRoutes = [
     icon: "ni ni-check-bold text-green",
     component: ConfirmEmail,
     layout: "/auth",
-    api: true
+    api: true,
+    role:"USER"
   },
   {
     path: "/reset-password",
@@ -127,7 +138,8 @@ const dashboardRoutes = [
     icon: "",
     component: ResetPassword,
     layout: "/auth",
-    api: true
+    api: true,
+    role:"USER"
   },
   {
     path: "/confirm-password/:id",
@@ -135,7 +147,8 @@ const dashboardRoutes = [
     icon: "",
     component: ConfirmPassword,
     layout: "/auth",
-    api: true
+    api: true,
+    role:"USER"
   },
   {
     path: "/reset-success",
@@ -143,7 +156,8 @@ const dashboardRoutes = [
     icon: "",
     component: ResetPasswordSuccess,
     layout: "/auth",
-    api: true
+    api: true,
+    role:"USER"
   },
   {
     path: "/registerassociate/:ml",
@@ -151,7 +165,8 @@ const dashboardRoutes = [
     icon: "",
     component: RegisterAssociate,
     layout: "/auth",
-    api: true
+    api: true,
+    role:"USER"
   },
   
 ];

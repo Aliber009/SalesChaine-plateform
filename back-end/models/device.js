@@ -15,6 +15,7 @@ const sequelize=require('../config/sequelize')
       imei: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
      
 

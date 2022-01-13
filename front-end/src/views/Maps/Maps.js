@@ -27,11 +27,9 @@ const Maps=({ markers , startAnimation, routes})=>{
 
   useEffect(() => {
     var pos=[]
-    Object.entries(position).forEach(i=>{pos.push(i[1])})
+    Object.entries(position).forEach(i=>{pos.push(i[1].latlng)})
     setmarks(pos)
-    return () => {
-      null
-    }
+    
   }, [position])
 
 /*   useEffect(()=>{
@@ -67,7 +65,7 @@ const Maps=({ markers , startAnimation, routes})=>{
   
   ))}
   {position[markers] && (
-   <PosMap pos={position[markers]} />
+   <PosMap pos={position[markers].latlng} />
   )}
   </MarkerClusterGroup>
 </MapContainer>

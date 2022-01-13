@@ -34,7 +34,8 @@ export default function Sidebar(props) {
         localStorage.removeItem('user');
         
         dispatch(sessionActions.updateSession(false))
-        props.history.push('/auth/login')
+         window.location.href="/auth/login";
+        //props.history.push(/auth/login)
         }
     else{
         console.log("err")

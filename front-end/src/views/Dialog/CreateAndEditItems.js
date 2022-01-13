@@ -43,10 +43,12 @@ const styles = {
 const EditCreateItem=({open,setOpen,mode,source,row})=> {
   const classes=useStyles()
   const dispatch=useDispatch()
+  
 
   //state of added Item
    const [item,setItem]=useState({})
    useEffect(() => {
+  
     setItem(row)
   }, [row])
  // get organizations 
@@ -69,7 +71,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
     return ""
  }
   
-  const apiUrl=config.WS_BASE_URL
+  const apiUrl=process.env.REACT_APP_SERVER_URL+'/'
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -164,10 +166,6 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Edit Device
-      </Button>
-     
       <Dialog
         open={open}
         onClose={handleClose}
@@ -448,6 +446,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
               
         </DialogContent>
         <DialogActions>
+         
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={()=>{ EditCreate();handleClose()}} autoFocus>
             {mode=="delete"?"Confirm delete":"Save"}

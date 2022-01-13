@@ -4,15 +4,16 @@ const { reducer, actions } = createSlice({
   name: 'session',
   initialState: {
     success: null,
-    user: null,
+    userRole: null,
   },
   reducers: {
     updateSession(state, action) {
       state.success = action.payload;
       
     },
-    updateUser(state, action) {
-      state.user = action.payload;
+    updateUserRole(state, action) {
+      
+      state.userRole = action.payload;
     },
   },
 });

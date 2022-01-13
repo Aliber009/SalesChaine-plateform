@@ -187,7 +187,7 @@ const columnsParent = [
     setOpen({...open,  [id]:!open[id]});
   };
   //find devices associations 
-  const backUrl=config.WS_BASE_URL
+  const backUrl=process.env.REACT_APP_SERVER_URL
  /*  useEffect(async () => {
     const uId=JSON.parse(localStorage.getItem('user')).id
     const response = await fetch(backUrl+'users/findassociations',{

@@ -42,11 +42,11 @@ const AddDeviceToGroup=({open,setOpen,mode,row})=> {
   const dispatch=useDispatch()
   const [groups,setgroups]=useState([])
   const [snackinfo,setsnackinfo]=useState({open:false})
-  const apiUrl=config.WS_BASE_URL
+  const apiUrl=process.env.REACT_APP_SERVER_URL+'/'
 
   //state of added Item
   useEffect(async ()=>{
-      const res=await fetch('http://localhost:5100/api/groups/allgroups',{
+      const res=await fetch(process.env.REACT_APP_SERVER_URL+'/groups/allgroups',{
         method:'GET',
         headers:{
           "Content-Type":"Application/json",
@@ -84,6 +84,7 @@ const AddDeviceToGroup=({open,setOpen,mode,row})=> {
          method:'POST',
          headers:{
            "Content-Type":"Application/json",
+           'authorization':localStorage.getItem('token')
            
           },
          body:JSON.stringify(query)

@@ -27,7 +27,7 @@ export default function Associate({open,setopen,ids}) {
    return re.test(email);
   }
   const updateAssociation = async ()=>{
-    const response = await fetch('http://localhost:5100/api/users/findassociations',{
+    const response = await fetch(process.env.REACT_APP_SERVER_URL+'/users/findassociations',{
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',

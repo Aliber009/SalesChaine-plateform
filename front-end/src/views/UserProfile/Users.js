@@ -61,6 +61,14 @@ export default function UsersPage() {
 
    const [open,setOpen]=useState(false)
    const [mode,setmode]=useState("")
+   const [actualuserRole,setactualUserRole]=useState("")
+
+  //GET USER PERMISSIONS
+  useEffect(()=>{
+    const user=JSON.parse(localStorage.getItem('user'))
+    setactualUserRole(user.role)
+ },[])
+
   //CRUD table devices
   
   const columns = [
@@ -156,9 +164,9 @@ const [rows,setRows]=useState([])
       <GridItem xs={12} sm={12} md={12}>
         <Card >
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>List of Users</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
+              Here is the global list of all the plateform users
             </p>
           </CardHeader>
           <CardBody style={{height:800}}>
@@ -180,12 +188,14 @@ const [rows,setRows]=useState([])
       </GridItem>
      
     </GridContainer>
+    {actualuserRole!="USER" && 
+    <> 
      <Fab style={{ marginLeft:-20,marginTop:-100}} onClick={()=>{setSendRow({});createRows()}}  color="primary" aria-label="add">
      <AddIcon />
-   </Fab>
-   <div style={{display:"none"}}>
-    <EditCreateItem mode={mode}  source={"users"} open={open} setOpen={setOpen} row={sendRow} /> 
-   </div>
+     </Fab>
+    <EditCreateItem mode={mode}  source={"users"} open={open} setOpen={setOpen} row={sendRow} />
+    </> 
+    }
    </>
   );
 }

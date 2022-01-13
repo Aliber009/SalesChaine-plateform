@@ -1,5 +1,5 @@
 const config = {
-    WS_BASE_URL: 'http://localhost:5100/api/',
+    WS_BASE_URL: process.env.REACT_APP_SERVER_URL+'/api/',
     DOMAIN_NAME: 'http://localhost:3000',
     DEMO: false
 }

@@ -1,5 +1,5 @@
 
-const Position=require('../models/position');
+const {Position} =require('../models/position');
 const {Op}=require('sequelize')
 
 const PositionController={
@@ -15,14 +15,13 @@ const PositionController={
     .catch(err=>{res.json({success:false,msg:err})})
 
  },   
- replay:(req,res)=>{
+ replay:async (req,res)=>{
      const deviceId=req.query.deviceId;
      //Date to cast the string in the query params 
      const from=req.query.from;
      const to=req.query.to; 
-    
-     console.log("params",deviceId,from,to)
-     Position.findAll({
+     try{
+     const pos =await Position.findAll({
         attributes: ['lat' , 'lon'] ,
         where:{
         [Op.and]:[ 
@@ -32,11 +31,12 @@ const PositionController={
         ]
       },
       order: [['createdAt', 'ASC']],
-
-})
-    .then(pos=>res.json({success:true,positions:pos}))
-    .catch(err=>{res.json({success:false})})
- }
-
+     })
+     res.json({success:true,positions:pos})
+    }
+    catch{
+        res.json({success:false})
+         }
+    }
 }
 module.exports=PositionController

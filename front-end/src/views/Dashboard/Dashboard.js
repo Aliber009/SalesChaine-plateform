@@ -35,7 +35,8 @@ import { CardContent } from '@mui/material';
 import Maps from "views/Maps/Maps";
 import { useState , useEffect} from "react";
 import {  website, server } from "variables/general.js";
-
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import { Typography } from "@material-ui/core";
 import {
   dailySalesChart,
   emailsSubscriptionChart,
@@ -60,7 +61,8 @@ import Associate from "./Associate";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddDeviceToGroup from "./addToGroup"
 import Snack from "views/Dialog/FeedSnack";
-import { position } from "stylis";
+import CircleIcon from '@mui/icons-material/Circle';
+import PieChart from "views/Charts/piechart";
 
 
 const useStyles = makeStyles(styles);
@@ -69,6 +71,8 @@ const useStyles = makeStyles(styles);
   //devices from redux Store
   const devices= useSelector(state=>state.devices.items)
   const currentpositions = useSelector(state=>state.positions.items)
+  const dataParents=useSelector(state=>state.associations.parents)
+  const dataChildren=useSelector(state=>state.associations.children)
   const classes = useStyles();
   const [selectionModel,setSelectionModel]=useState([])
   const [open,setOpen]=useState()
@@ -81,43 +85,55 @@ const useStyles = makeStyles(styles);
   const myRef = useRef()
   const [opengroupDial,setopengroupDial]=useState(false)
   const [snackinfo,setsnackinfo]=useState({open:false})
-  
+  const [actualuserRole,setactualUserRole]=useState("")
+
+  //GET USER PERMISSIONS
+  useEffect(()=>{
+    const user=JSON.parse(localStorage.getItem('user'))
+    setactualUserRole(user.role)
+ },[])
 
   //CRUD table devices
   const columns = [
-    { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
+    { flex: 1 ,field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
     {
       field: "pos",
       headerName: "",
       headerAlign:"center",
       align:'center',
-      width:20,
+      minWidth:10,
       sortable:false,
       disableColumnMenu:true,
+      flex: 1 ,
       renderCell:(e)=>{return(<IconButton onClick={()=>{showpos(e)}}>< MyLocationIcon style={{fill:"#1C6DD0"}} /> </IconButton>)}
     },
     {
       field: "name",
       headerName: "Device Name",
       headerAlign:"center",
-      align: "left",
-      width: 200,
+      align:'center',
+      minWidth: 90,
+      flex: 1 ,
       editable: true,
     },
     {
       field: "imei",
       headerName: "Imei",
       headerAlign:"center",
-      width: 100,
+      align:'center',
+      minWidth: 110,
+      flex: 1 ,
       editable: true,
     },
     {
       field: "organization",
       headerName: "Organization",
       headerAlign:"center",
+      align:'center',
       align: "left",
       type: "number",
-      width: 10,
+      minWidth: 90,
+      flex: 1 ,
       editable: true,
     },
     {
@@ -126,52 +142,49 @@ const useStyles = makeStyles(styles);
       headerAlign:"center",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 30,
+      minWidth: 100,
+      flex: 1 ,
+      renderCell:(e)=>{return(<><Tooltip title={"connection"}><Button size="small" startIcon={<CircleIcon  style={{fill:checkStatus(e.row.id)[1]}} />}> {checkStatus(e.row.id)[0]} </Button></Tooltip></>)}
       
     },
     {
       field: "shared",
       headerName: "Client owner",
       headerAlign:"center",
-      sortable: false,
-      width: 120,
-    },
-    /* {
-      field: "share",
-      headerName: "",
-      width: 20,
       align:'center',
-      sortable:false,
-      disableColumnMenu:true,
-      renderCell:(e)=>{return( <><Tooltip title="Associate"><IconButton onClick={()=>{openAssociate()}}> <PersonAddAltIcon /></IconButton></Tooltip></> )}
-    }, */
+      sortable: false,
+      minWidth: 130,
+      flex: 1 ,
+    },
     {
       field: "Replay",
       headerName: "",
       align:'center',
-      width:20,
+      minWidth:10,
       sortable:false,
       disableColumnMenu:true,
+      flex: 1 ,
       renderCell:(e)=>{return(<><Tooltip title="Replay"><IconButton onClick={()=>replayRows(e)}>< ReplayIcon  style={{fill:'#1597E5'}} /> </IconButton></Tooltip></>)}
     },
     {
       field: "Edit",
       headerName: "",
-      width: 20,
+      minWidth: 10,
       align:'center',
       sortable:false,
       disableColumnMenu:true,
+      flex: 1 ,
       renderCell:(e)=>{return(<><Tooltip title="Edit"><IconButton onClick={()=>editRows(e)}>< ModeEditOutlinedIcon /> </IconButton></Tooltip></>)}
     },
     {
       field: "remove",
       headerName: "",
-      width: 20,
+      minWidth: 10,
       align:'center',
       sortable:false,
       disableColumnMenu:true,
+      flex: 1 ,
       renderCell:(e)=>{  return(<><Tooltip title="Remove"><IconButton onClick={()=>removeRows(e)}>< ClearIcon  style={{fill:'red'}} /></IconButton></Tooltip></>)}
-      
     },
   ];
   const [sendRow,setSendRow]=useState({})
@@ -195,32 +208,52 @@ const useStyles = makeStyles(styles);
    myRef.current.scrollIntoView({ behavior: 'smooth',  block: 'center' , inline: "start"})
  }
  const openAssociate=()=>{
-   
    setopenAssociate(true)
  }
-
+ //check global status and individual status for devices
+const [online,setonline]=useState(0)
+const checkStatus=(id)=>{
+  var status=["Offline","#9D9D9D"]
+  if(currentpositions[id]){
+    var diffMs = new Date() - new Date(currentpositions[id].time); // milliseconds between now & data
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
+    if(diffMins<30){
+      status = ["Online","#06FF00"]
+      setonline(online+1)
+    }
+  }
+  return status
+}
 
 const [Rows,setRows]=useState({})
-
 useEffect(()=>{
-
+   const user=JSON.parse(localStorage.getItem('user'))
+   setactualUserRole(user.role)
    setRows(devices)
 
 },[devices])
 
+//find nulber of device Associations
+const findnumberOfdevices=(data)=>{
+ var x=0;
+ for(var i=0;i<data.length;i++){
+   x+=data[i].Devices.length
+ }
+ return x
+}
 
 //Replay function
 const [marks, setMarks]=useState([])
 const replaypositions=async(deviceId,from,to)=>{
   try{
-  const res=await fetch('http://localhost:5000/api/positions/replay?deviceId='+deviceId+'&from='+from+'&to='+to)
+  const res=await fetch(process.env.REACT_APP_SOCKET_URL+'/socket/positions/replay?deviceId='+deviceId+'&from='+from+'&to='+to)
   if(res.ok){
-    const {positions} =await res.json()
+    const {positions} = await res.json()
     //format array of positions for the map replay path 
     var markss=[]
-    if(position.length>0)
+    if(positions.length>0)
     {
-    const pos=positions.map(p=>markss.push([p.lat,p.lon]))
+    const pos=positions.map(p=>markss.push([parseFloat(p.lat),parseFloat(p.lon)]))
     setMarks(markss)
     setStartReplay(true)
     myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -312,18 +345,15 @@ const DateTimeReplay=(deviceId) => {
               <CardIcon color="warning">
                 <Icon>content_copy</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Number of devices</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                {devices.length || "0"} <Typography style={{display:"inline-block" ,color:"#2C272E"}} className={classes.cardTitle} >Device</Typography>
               </h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
                 <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Get more space
+                  devices are added by unique serial
                 </a>
               </div>
             </CardFooter>
@@ -335,66 +365,50 @@ const DateTimeReplay=(deviceId) => {
               <CardIcon color="success">
                 <Store />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Device associations</p>
+              <Typography  className={classes.cardTitle} variant="body1" style={{display:"inline-block" ,color:"#2C272E"}} >Associates: {findnumberOfdevices(dataParents) || '0'} </Typography >
+              <Typography className={classes.cardTitle} variant="body1"style={{color:"#2C272E"}} >Associated: {findnumberOfdevices(dataChildren)  || '0'} </Typography >
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
-                Last 24 Hours
+                Shared devices
               </div>
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="danger" stats icon>
-              <CardIcon color="danger">
-                <Icon>info_outline</Icon>
-              </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
+        
+       
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
                 <Accessibility />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Account associations</p>
+              <Typography className={classes.cardTitle} variant="body1" style={{display:"inline-block" ,color:"#2C272E"}} >Associates: {dataParents.length || '0'} </Typography >
+              <Typography className={classes.cardTitle} variant="body1"style={{color:"#2C272E"}} >Associated: {dataChildren.length || '0'} </Typography >
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <Update />
-                Just Updated
+                Shared accounts
               </div>
             </CardFooter>
           </Card>
         </GridItem>
+        
       </GridContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
-            <CardHeader color="success">
-              <ChartistGraph
-                className="ct-chart"
-                data={dailySalesChart.data}
-                type="Line"
-                options={dailySalesChart.options}
-                listener={dailySalesChart.animation}
-              />
+            <CardHeader color="info">
+              <div style={{minHeight:150}}>
+              <PieChart series={[online ,devices.length-online]} />
+              </div>
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
+              <h4 className={classes.cardTitle}>Daily activities</h4>
               <p className={classes.cardCategory}>
                 <span className={classes.successText}>
                   <ArrowUpward className={classes.upArrowCardCategory} /> 55%
@@ -459,12 +473,12 @@ const DateTimeReplay=(deviceId) => {
         <GridItem xs={12}  >
           <div ref={myRef} >
           <CustomTabs
-            title="Tasks:"
+            title="Maps:"
             headerColor="primary"
             tabs={[
               {
-                tabName: "Map",
-                tabIcon: BugReport,
+                tabName: "Main Map",
+                tabIcon: MapOutlinedIcon,
                 tabContent: (
                   <Maps markers={lastpos} startAnimation={startreplay} routes={marks} />
                 ),
@@ -505,17 +519,17 @@ const DateTimeReplay=(deviceId) => {
               </p>
               </CardHeader>
               <CardContent>
-                <div style={{height:600,backgroundColor:"#FFF"}}>
+                <div style={{height:600, width:'100%',backgroundColor:"#FFF"}}>
                 <DataGrid
+            style={{width:'100%'}}    
             components={{
             Toolbar: CustomToolbar}}
-       
             rows={Rows}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
             onSelectionModelChange={(newSelectionModel) => {
-              setSelectionModel(newSelectionModel);
+            setSelectionModel(newSelectionModel);
             }}
             selectionModel={selectionModel}
             disableSelectionOnClick
@@ -527,13 +541,15 @@ const DateTimeReplay=(deviceId) => {
               </Card>
         </GridItem>
       </GridContainer>
+      {actualuserRole!="USER" &&
+      <>
       <Fab style={{ marginLeft:-20,marginTop:-100}}  onClick={()=>{setmode("create");setSendRow({});setOpen(true)} } color="primary" aria-label="add">
         <AddIcon />
       </Fab>
-      <div style={{display:"none"}}>
-      <EditCreateItem mode={mode}  source={"devices"} open={open} setOpen={setOpen} row={sendRow}  /> 
-     </div>
+     <EditCreateItem mode={mode}  source={"devices"} open={open} setOpen={setOpen} row={sendRow}  /> 
      <Associate open={openassociate} setopen={setopenAssociate} ids={selectionModel} />
+     </>
+     }
      <AddDeviceToGroup open={opengroupDial} setOpen={setopengroupDial} row={selectionModel} />
      <Snack opensnack={snackinfo.open} setopensnack={setsnackinfo} severity={snackinfo.severity} message={snackinfo.message} />
      {DateTimeReplay(replayRow)}

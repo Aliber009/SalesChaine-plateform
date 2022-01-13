@@ -9,7 +9,7 @@ const { reducer, actions } = createSlice({
     update(state, action) {
       //state.items.push({action.payload['deviceId']:action.pay})
       const id=action.payload["deviceId"]
-      state.items[id] = [parseFloat(action.payload.lat),parseFloat(action.payload.lon)];
+      state.items[id] = {latlng:[parseFloat(action.payload.lat),parseFloat(action.payload.lon)],time:action.payload.gpsTime};
       //console.log("pos",state.items)
     },
   }

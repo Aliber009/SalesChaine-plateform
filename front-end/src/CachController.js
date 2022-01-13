@@ -8,9 +8,17 @@ import { associationsActions } from "store"
 
 
 const CachingController = () => {
-const backUrl=config.WS_BASE_URL
+const backUrl=process.env.REACT_APP_SERVER_URL+'/'
 const dispatch=useDispatch();
 const logged = useSelector(state => state.session.success );
+const Role = useSelector(state => state.session.userRole );
+
+  //GET USER PERMISSIONS
+   useEffect(  ()=>{
+    const user=JSON.parse(localStorage.getItem('user')) || {}
+    dispatch(sessionActions.updateUserRole(user.role))
+  },[Role]) 
+
 
 // check auth
     useEffect(async () => {
@@ -22,9 +30,10 @@ const logged = useSelector(state => state.session.success );
                 'authorization':localStorage.getItem('token')
                      },     
         });
-        if(response.ok){
+        if(response.ok){       
             const session=await response.json()
             dispatch(sessionActions.updateSession(session.success))
+            
         }
       }
       catch{
@@ -33,7 +42,7 @@ const logged = useSelector(state => state.session.success );
     },[])
  // Get all users
     useEffect(async () => {
-     if(logged){
+     if( logged && Role == "ADMIN" ){
           const response = await fetch(backUrl+'users/all',{
             method: 'POST',
             headers: {
@@ -47,10 +56,10 @@ const logged = useSelector(state => state.session.success );
             dispatch(usersActions.update(users.users));
           }
      }
-      }, [logged]);
+      }, [logged,Role]);
   // Get all devices
   useEffect(async () => {
-    if(logged){
+    if(logged ){
     const response = await fetch(backUrl+'devices/all',{
       method: 'POST',
       headers: {

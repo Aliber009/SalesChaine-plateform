@@ -29,6 +29,7 @@ import Associate from "views/Dashboard/Associate";
 
 
 
+
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -116,6 +117,7 @@ export default function TypographyPage() {
   const [openDial, setOpenDial] = useState(false);
   const [openassociate,setopenAssociate]=useState(false)
   const [deviceIds,setdeviceIds]=useState()
+  const role = useSelector(state => state.session.userRole)
 
   //open items separately with id 
   const handleClick = (id) => {
@@ -145,6 +147,7 @@ export default function TypographyPage() {
         <ListItemText primary={gr.name} />
         
         { gr.Devices.length>0? open[gr.id] ? <ExpandLess /> : <ExpandMore />:null}
+        {role=="ADMIN" && <>
         <Tooltip title="Associate">
         <IconButton style={{marginLeft:20}} onClick={()=>{setdeviceIds(getDeviceIds(gr.Devices));setopenAssociate(true)}}>
         <PersonAddAltIcon  style={{fill:"#1976d2"}}/>
@@ -153,6 +156,8 @@ export default function TypographyPage() {
         <IconButton onClick={()=>{setmode('delete');setOpenDial(true); setRow(gr)}} style={{marginLeft:20}}>
         <ClearIcon style={{fill:"red"}}/>
         </IconButton>
+        </>
+         }
         </ListItemButton>
         {gr.Devices.length>0 && 
         <>

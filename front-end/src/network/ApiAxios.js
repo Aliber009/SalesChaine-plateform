@@ -8,7 +8,7 @@ import config from "../config";
 // });
 
 const instance = axios.create({
-    baseURL: config.WS_BASE_URL,
+    baseURL: process.env.REACT_APP_SERVER_URL+'/',
 });
 
 instance.interceptors.request.use(async (config) => {

@@ -18,12 +18,14 @@ const SocketController = () => {
   
     //const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     useEffect(() => {
-        const socket = io(`http://localhost:5000`);
+        const socket = io(process.env.REACT_APP_SOCKET_URL);
+        
         setSocket(socket);
         //data received on socket
         socket.on("tst",data=>{
           dispatch(positionsActions.update(data))
         })
+      
         return () => socket.close();
       }, []);
 

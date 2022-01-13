@@ -15,23 +15,14 @@ const SnakeAnim = ({ startAnimation, routes }) => {
 
   useEffect(() => {
     if (!startAnimation) return;
-
-    var styledPath=[]
+  
     var markers=[]
     for(var i = 1;i<routes.length;i++){
-      if(i%10!=0 ){ 
-        markers.push(routes[i]) 
-      }
-      else{
         markers.push(routes[i])
-        styledPath.push(L.polyline(markers))
-        styledPath.push(L.marker(routes[i],{ ModeEditOutlinedIcon }))
-        markers=[routes[i]]
-      }   
     }
     
     const route = L.featureGroup(
-      styledPath
+      [L.marker(markers[0],{ ModeEditOutlinedIcon }),L.polyline(markers),L.marker(markers[markers.length-1],{ ModeEditOutlinedIcon })]
     );
     try{
     map.fitBounds(route.getBounds())
@@ -48,8 +39,9 @@ const SnakeAnim = ({ startAnimation, routes }) => {
       console.log(ev.type);
     });
   
+    return ()=>{map.removeLayer(route)}
    
-  }, [startAnimation]);
+  }, [startAnimation,routes]);
 
   return null;
 };

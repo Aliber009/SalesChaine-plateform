@@ -5,6 +5,7 @@ export default function PosMap({pos}){
     
 
     if(pos){
+    map.setZoom(17)
     map.panTo(pos)
     }
     

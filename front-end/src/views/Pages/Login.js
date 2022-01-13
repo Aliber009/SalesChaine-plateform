@@ -50,6 +50,7 @@ const Login = props => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
             dispatch(sessionActions.updateSession({success:true}))
+            dispatch(sessionActions.updateUserRole(data.user.role))
             props.history.push("/admin/dashboard");
         } else {
             setPassword("");

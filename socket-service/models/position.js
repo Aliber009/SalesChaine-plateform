@@ -2,7 +2,19 @@ const sequelize=require('../config/sequelize')
 const { DataTypes } = require('sequelize');
 const pg=require("pg")
 
-const Devices=sequelize.define('Devices');
+const Devices=sequelize.define('Devices',{
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  imei: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+ 
+
+});
 
 const Position = sequelize.define('Position',
 {
@@ -26,4 +38,5 @@ const Position = sequelize.define('Position',
 Position.belongsTo(Devices, {foreignKey: 'deviceId'});
 Position.sync()
 
-module.exports = Position;
+module.exports ={ Position,Devices } ;
+

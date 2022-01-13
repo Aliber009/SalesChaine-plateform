@@ -96,9 +96,9 @@ export default function Notifications() {
       <GridItem xs={12} sm={12} md={12}>
         <Card >
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>Notifications</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
+              History of notifications stored here 
             </p>
           </CardHeader>
           <CardBody style={{height:'800px'}}>
