@@ -339,8 +339,8 @@ const DateTimeReplay=(deviceId) => {
   return (
     <div>
       <GridContainer>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
+      <GridItem xs={12} sm={6} md={4}>
+          <Card >
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
                 <Icon>content_copy</Icon>
@@ -349,6 +349,11 @@ const DateTimeReplay=(deviceId) => {
               <h3 className={classes.cardTitle}>
                 {devices.length || "0"} <Typography style={{display:"inline-block" ,color:"#2C272E"}} className={classes.cardTitle} >Device</Typography>
               </h3>
+              </CardHeader>
+            <CardHeader color="info" style={{marginTop:20}}>
+              <div style={{minHeight:150,paddingTop:13 }}>
+              <PieChart series={[online ,devices.length-online]} />
+              </div>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -359,7 +364,7 @@ const DateTimeReplay=(deviceId) => {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
+        <GridItem xs={12} sm={6} md={4}>
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
@@ -376,10 +381,6 @@ const DateTimeReplay=(deviceId) => {
               </div>
             </CardFooter>
           </Card>
-        </GridItem>
-        
-       
-        <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
@@ -397,35 +398,9 @@ const DateTimeReplay=(deviceId) => {
             </CardFooter>
           </Card>
         </GridItem>
-        
-      </GridContainer>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="info">
-              <div style={{minHeight:150}}>
-              <PieChart series={[online ,devices.length-online]} />
-              </div>
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Daily activities</h4>
-              <p className={classes.cardCategory}>
-                <span className={classes.successText}>
-                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                </span>{" "}
-                increase in today sales.
-              </p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="warning">
+        <GridItem xs={12} sm={6} md={4} >
+          <Card chart  >
+            <CardHeader color="warning" style={{minHeight:225}}>
               <ChartistGraph
                 className="ct-chart"
                 data={emailsSubscriptionChart.data}
@@ -437,28 +412,6 @@ const DateTimeReplay=(deviceId) => {
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="danger">
-              <ChartistGraph
-                className="ct-chart"
-                data={completedTasksChart.data}
-                type="Line"
-                options={completedTasksChart.options}
-                listener={completedTasksChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Completed Tasks</h4>
               <p className={classes.cardCategory}>Last Campaign Performance</p>
             </CardBody>
             <CardFooter chart>

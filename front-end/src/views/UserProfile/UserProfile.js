@@ -51,8 +51,8 @@ export default function UserProfile() {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
-              <p className={classes.cardCategoryWhite}>Complete your profile</p>
+              <h4 className={classes.cardTitleWhite}>Personal Profile</h4>
+              <p className={classes.cardCategoryWhite}> information of user account</p>
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -63,7 +63,8 @@ export default function UserProfile() {
                     formControlProps={{
                       fullWidth: true,
                     }}
-                    
+                    value={user.company || ""}
+                    onChange={(e)=>setUser({...user,company:e.target.value})}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={3}>
@@ -92,72 +93,19 @@ export default function UserProfile() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
-                    labelText="First Name"
-                    id="first-name"
+                    labelText="Role"
+                    id="role"
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    value={user.role || ""}
+                    onChange={(e)=>setUser({...user,role:e.target.value})}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Last Name"
-                    id="last-name"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="City"
-                    id="city"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Country"
-                    id="country"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Postal Code"
-                    id="postal-code"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                  <CustomInput
-                    labelText="People say nothing is impossible, so I do nothing everyday :D"
-                    id="about-me"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      multiline: true,
-                      rows: 5,
-                    }}
-                  />
-                </GridItem>
+                
               </GridContainer>
             </CardBody>
-            <CardFooter>
-              <Button color="primary">Update Profile</Button>
-            </CardFooter>
+           
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={4}>
@@ -175,7 +123,7 @@ export default function UserProfile() {
                 Work might run through some bugs eventually so bear with it please :p 
               </p>
               <Button color="primary" round>
-                Follow
+                OK
               </Button>
             </CardBody>
           </Card>

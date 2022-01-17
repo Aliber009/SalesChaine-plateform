@@ -1,6 +1,6 @@
 
 const User=require('../models/user')
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const config = require('../config/keys');
@@ -158,45 +158,39 @@ forgotpass:(req, res) => {
       }
     });
 },
-register:(req, res) => {
+register: async (req, res) => {
     const {name, email, password} = req.body;
-  
-    User.findOne({where:{email: email}}).then((user) => {
-      if (user) {
+    try{
+     const user = await User.findOne({where:{email: email}})
+       if (user) {
         res.json({success: false, msg: 'Email already exists'});
-      } else if (password.length < 6) {
+      } 
+      else if (password.length < 6) {
         // eslint-disable-next-line max-len
         res.json({success: false, msg: 'Password must be at least 6 characters long'});
-      } else {
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(password, salt, null, (err, hash) => {
-            if (err) throw err;
-            const query = {name: name, email: email, password: hash, role:"USER"};
-             User.create(query)
-             .then( async (user)=>{
+      } 
+      else{
+        bcrypt.hash(password, 10).then( function(hash) {
+          const query = {name: name, email: email, password: hash, role:"USER"};
+          User.create(query).then(
+            async (user)=> {
               const transporter = nodemailer.createTransport(smtpConf);
-              // don't send emails if it is in demo mode
-              if (process.env.DEMO != 'yes') {
-              // send mail with defined transport object
-                await transporter.sendMail({
-                  from: '"Nextronic" <' + smtpConf.auth.user + '>',
-                  to: email, // list of receivers
-                  subject: 'Nextronic Confirmation Account', // Subject line
-                  // eslint-disable-next-line max-len
-                  html: '<h1>Hey</h1><br><p>Confirm your new account </p><p><a href="' + 'http://localhost:3000/auth/confirm-email/' + user.id + '">"' + 'http://localhost:3000/auth/confirm-email/' + user.id + '"</a><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
-                });
+              await transporter.sendMail({
+                from: '"Nextronic" <' + smtpConf.auth.user + '>',
+                to: email, // list of receivers
+                subject: 'Nextronic Confirmation Account', // Subject line
                 // eslint-disable-next-line max-len
-                 res.json({success: true, msg: 'Comfirmation mail has been sent  '});
-              }
-              // eslint-disable-next-line max-len
-              res.json({success: true, userID: user.id, msg: 'The user was succesfully registered'});
+                html: '<h1>Hey</h1><br><p>Confirm your new account </p><p><a href="' + 'http://localhost:3000/auth/confirm-email/' + user.id + '">"' + 'http://localhost:3000/auth/confirm-email/' + user.id + '"</a><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
+              });
+              res.json({success:true,msg:"creation"})
             })
-             .catch(err=>{res.json({msg:err})})
-              //end of user
-          });
         });
       }
-    });
+    }
+    catch{
+      res.json({success:false,msg:"error creation account"})
+    }  
+      
 },
 confirm:(req, res) => {
     const userID = req.params.id;
@@ -220,7 +214,7 @@ login:(req, res) => {
       if (!user.accountConfirmation) {
         return  res.json({success: false, msg: 'Account is not confirmed'});
       }
-      bcrypt.compare(password, user.password, async function(err, isMatch) {
+      bcrypt.compare(password, user.password, function(err, isMatch) {
         console.log("user",user)
         if (isMatch) {
           const token = jwt.sign(user, config.secret, {

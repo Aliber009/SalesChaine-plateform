@@ -19,6 +19,7 @@ import {
 import Toast from 'react-bootstrap/Toast'
 import {register} from "../../network/ApiAxios";
 import config from "../../config";
+import Snack from "views/Dialog/FeedSnack";
 
 const Register = () => {
 
@@ -29,6 +30,7 @@ const Register = () => {
     const [checkbox, setCheckbox] = useState(false);
     const [error, setError] = useState("");
     const [showToast, setShowToast] = useState(false);
+    const [snackinfo,setsnackInfo]=useState({open:false})
     const [toastMessage, setToastMessage] = useState("Email sent! Check it to Comfirm ^ ^.");
     const [userID, setUserID] = useState(null);
 
@@ -58,7 +60,8 @@ const Register = () => {
         setPassword("");
         setConfirmPassword("");
         setCheckbox(false);
-        setShowToast(true);
+        //setShowToast(true);
+        setsnackInfo({open:true,severity:"success",message:"email sent to your email"})
     };
 
     return (
@@ -75,26 +78,7 @@ const Register = () => {
                     zIndex: 50
                 }}
             >
-                <Toast style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    backgroundColor: "white",
-                    padding: 10,
-                    borderRadius: 10
-                }} onClose={() => setShowToast(false)} show={showToast} delay={10000} autohide={!config.DEMO}>
-                    <Toast.Header>
-                        <span> Nextronic - DigiEye team  </span>
-                       {/*  <img style={{height: "30px", width: "100px"}} src={require("assets/img/brand/argon-react.png").default}  alt="..."/> */}
-                    </Toast.Header>
-                    <Toast.Body>
-                        {toastMessage}
-                        {config.DEMO ?
-                            <a href={config.DOMAIN_NAME + '/auth/confirm-email/' + userID}>
-                                {config.DOMAIN_NAME + '/auth/confirm-email/' + userID}
-                            </a> : null}
-                    </Toast.Body>
-                </Toast>
+                <Snack opensnack={snackinfo.open} setopensnack={setsnackInfo} severity={snackinfo.severity} message={snackinfo.message} />
             </div>
             <Col lg="6" md="8">
                 <Card className="bg-secondary shadow border-0">

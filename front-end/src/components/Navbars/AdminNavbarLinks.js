@@ -20,9 +20,14 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { useHistory } from "react-router-dom";
+import { logout } from "network/ApiAxios";
+import { useDispatch } from "react-redux";
+import { sessionActions } from "store"
+
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const history=useHistory();
   const [openNotification, setOpenNotification] = React.useState(null);
@@ -47,6 +52,22 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
+  const trylogout=async() => {    
+    
+    const logoutdata = await logout()
+    const {data}=logoutdata
+    if(data.success){
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        dispatch(sessionActions.updateSession(false))
+         window.location.href="/auth/login";
+        //props.history.push(/auth/login)
+        }
+    else{
+        console.log("err")
+    }
+  }
   return (
     <div>
       <div className={classes.searchWrapper}>
@@ -77,7 +98,7 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>5</span>
+          <span className={classes.notifications}>2</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
               Notification
@@ -111,32 +132,15 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
-                      Mike John responded to your email
+                      this is demo notification 
                     </MenuItem>
                     <MenuItem
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
-                      You have 5 new tasks
+                      I am working on them 
                     </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      You{"'"}re now friend with Andrew
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another Notification
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another One
-                    </MenuItem>
+                   
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -190,7 +194,7 @@ export default function AdminNavbarLinks() {
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={()=>{handleCloseProfile()}}
+                      onClick={trylogout}
                       className={classes.dropdownItem}
                     >
                       Logout

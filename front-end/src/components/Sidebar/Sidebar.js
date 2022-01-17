@@ -26,8 +26,8 @@ const useStyles = makeStyles(styles);
 export default function Sidebar(props) {
     const dispatch = useDispatch();
     const trylogout=async() => {    
-    const token = localStorage.getItem(token)
-    const logoutdata = await logout(token)
+    
+    const logoutdata = await logout()
     const {data}=logoutdata
     if(data.success){
         localStorage.removeItem('token');
@@ -101,7 +101,7 @@ export default function Sidebar(props) {
         );
       })}
         
-            <ListItem  style={{ backgroundColor:"#EC255A"}}>
+            <ListItem  style={{ marginTop:100,backgroundColor:"#EC255A"}}>
              <ListItemButton onClick={trylogout} >
               <ListItemIcon style={{marginLeft:50}} className={ classes.whiteFont } >
                 <LogoutIcon className={ classes.whiteFont } />

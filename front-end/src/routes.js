@@ -106,24 +106,6 @@ const dashboardRoutes = [
   role:"USER"
   },
   {
-    path: "/maps",
-    name: "Maps",
-    rtlName: "خرائط",
-    icon: LocationOn,
-    component: Maps,
-    layout: "/admin",
-    role:"USER"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    rtlName: "إخطارات",
-    icon: Notifications,
-    component: NotificationsPage,
-    layout: "/admin",
-    role:"USER"
-  },
-  {
     path: "/confirm-email/:id",
     name: "Confirm Email",
     icon: "ni ni-check-bold text-green",
