@@ -1,6 +1,6 @@
  const sequelize=require('../config/sequelize')
  const { DataTypes } = require('sequelize');
- const Device = require('./device');
+ const {Device} = require('./device');
 
 
   const Group = sequelize.define(

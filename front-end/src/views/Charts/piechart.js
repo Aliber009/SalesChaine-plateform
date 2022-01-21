@@ -5,7 +5,7 @@ const PieChart=({series})=>{
      const [data, setdata] = useState([])
       useEffect(()=>{
           setdata(series)
-      },[series])
+      },[])
         
         const options = {
           chart: {
@@ -31,8 +31,8 @@ const PieChart=({series})=>{
           }]
         }
       return (
-     <div id="chart" >
-    <ReactApexChart options={options} series={data} type="donut" />
+     <div id="chart"  style={{marginTop:200}}>
+    <ReactApexChart  options={options} series={data} type="donut" />
     </div>
       )}
 export default PieChart;      

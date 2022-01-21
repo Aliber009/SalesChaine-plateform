@@ -19,6 +19,19 @@ app.use(cors())
 app.get('/', (req, res) => {
   res.send("Helolo");
 });
+
+//checking Status of devices 
+const checkStatus=(time)=>{
+  var status="Offline"
+  
+    var diffMs = new Date() - new Date(time); // milliseconds between now & data
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
+    if(diffMins<15){
+      status = "Online"
+    }
+  
+  return status
+}
  
 //Data should be stored in Db even the user is not connected but only updated if they're connected
 
@@ -29,21 +42,23 @@ app.get('/', (req, res) => {
       channel.prefetch(1)
       channel.consume("http-queue", async (msg) => {
          const jsonmsg=JSON.parse(msg.content.toString())
-        const device=await Devices.findOne({where:{imei:jsonmsg.serial}})
+         const device=await Devices.findOne({where:{imei:jsonmsg.serial}})
         if(device){
-        const queries= {lat:jsonmsg.lat,lon:jsonmsg.lng, deviceId:device.id, gpsTime:new Date(jsonmsg.time*1000).toISOString()} 
+        const gpsTime = new Date(jsonmsg.time*1000).toISOString();
+        const queries = {
+          lat:jsonmsg.lat,
+          lon:jsonmsg.lng,
+          deviceId:device.id,
+          gpsTime:gpsTime,
+          Attributes:JSON.stringify({status:checkStatus(gpsTime),odometre:jsonmsg.odometer , battery:jsonmsg.bat_level ,temperature:jsonmsg.coolant_temp  ,speed:jsonmsg.vehicle_speed,imei:jsonmsg.serial })
+        } 
         const pos=await Position.create(queries) ;
-        //check socket connection inside the consume
-       /*  io.on('connection', (socket) => {
-          console.log('a user connected'); */
+       //send pos and additional data :
             io.emit('tst',pos);
-           /*  socket.on('disconnect', () => {
-            console.log('user disconnected');
-              
-              }); 
-          })*/
+        
         } 
         setTimeout(function() {
+          
           console.log(" [x] Done");
           channel.ack(msg);
         }, 50);

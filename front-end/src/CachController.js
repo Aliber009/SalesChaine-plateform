@@ -5,6 +5,7 @@ import { sessionActions,usersActions,organizationsActions,devicesActions, groups
 import { connect } from "react-redux"
 import config from "./config";
 import { associationsActions } from "store"
+import { positionsActions } from "store"
 
 
 const CachingController = () => {
@@ -71,6 +72,8 @@ const Role = useSelector(state => state.session.userRole );
     if (response.ok) {
       const devices=await response.json()
       dispatch(devicesActions.update(devices.devices));
+      console.log('dv',devices.lastpos)
+      dispatch(positionsActions.updateAll(devices.lastpos))
        }
     }
 }, [logged]);

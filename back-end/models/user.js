@@ -4,7 +4,7 @@
 const sequelize=require('../config/sequelize')
  const { DataTypes } = require('sequelize');
 // const User_user_device = require('./User_user_device');
-const Device = require('./device');
+const {Device} = require('./device');
 const { values } = require('sequelize/lib/operators');
 const Group = require('./group');
 

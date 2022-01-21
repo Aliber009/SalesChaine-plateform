@@ -22,7 +22,7 @@ const { reducer, actions } = createSlice({
       state.children=state.children.map(u=>{
         if(u.id==action.payload.associatedId)
         {
-          var x=u.Devices.filter(i=>i.id!=action.payload.deviceId);
+          var x=u.Devices.filter(i=>!action.payload.deviceId.includes(i.id));
           u.Devices=x
         }return u
        })

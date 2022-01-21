@@ -9,8 +9,6 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import { Fab } from "@material-ui/core";
-import AddIcon from '@mui/icons-material/Add';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -22,12 +20,11 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ClearIcon from '@mui/icons-material/Clear';
 import { IconButton, Tooltip } from "@mui/material";
-import config from "config";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import Snack from "views/Dialog/FeedSnack";
 import { useDispatch, useSelector } from "react-redux"
 import { associationsActions } from "store";
-
+import { Button } from "@mui/material";
 
 
 const styles = {
@@ -92,15 +89,7 @@ const columnsChild = [
     width: 100,
     editable: true,
   },
-  {
-    field: "organization",
-    headerName: "Client Owner",
-    headerAlign:"center",
-    align: "left",
-    type: "number",
-    width: 120,
-    editable: true,
-  },
+  
   {
     field: "fullName",
     headerName: "Connecté",
@@ -148,15 +137,7 @@ const columnsParent = [
     width: 100,
     editable: true,
   },
-  {
-    field: "organization",
-    headerName: "Client Owner",
-    headerAlign:"center",
-    align: "left",
-    type: "number",
-    width: 120,
-    editable: true,
-  },
+
   {
     field: "fullName",
     headerName: "Connecté",
@@ -180,7 +161,7 @@ const columnsParent = [
   const [snackinfo,setsnackinfo]=useState({open:false})
   const dataParents=useSelector(state=>state.associations.parents)
   const dataChildren=useSelector(state=>state.associations.children)
-  
+  const [selectionModel,setSelectionModel]=useState([])
 
   //open items separately with id 
   const handleClick = (id) => {
@@ -188,25 +169,28 @@ const columnsParent = [
   };
   //find devices associations 
   const backUrl=process.env.REACT_APP_SERVER_URL
- /*  useEffect(async () => {
-    const uId=JSON.parse(localStorage.getItem('user')).id
-    const response = await fetch(backUrl+'users/findassociations',{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-               },
-     body:JSON.stringify({userId:uId})     
-  });
-    if (response.ok) {
-      const {associationsParent,associationsChildren}=await response.json()
-      setDataChildren(associationsChildren)
-      setDataParents(associationsParent)
-    }
-  }, []); */
+//custom toolbar 
+function CustomToolbar() {
+  return (
+    <div style={{display:"inline-flex"}}>
+      <GridToolbar />
+      <Button  style={{color:"#1976d2", marginTop:3 }} startIcon={<PersonRemoveIcon />} 
+        onClick={()=>{
+        if(selectionModel.length==0){
+          setsnackinfo({open:true,severity:"warning",message:"Please select devices before grouping"})
+        }
+        else{
+          removeAssociationDevice(selectionModel)
+      }
+      }} size="small">Dessociate from Account</Button>
+      
+    </div>
+  );
+}
   
   //dessociation of devices
   const removeAssociationDevice=async(id)=>{
-    const res=await fetch(backUrl+'users/removeDeviceAssociations',{
+    const res=await fetch(backUrl+'/users/removeDeviceAssociations',{
      method: 'POST',
      headers: {
          'Content-Type': 'application/json',
@@ -259,13 +243,19 @@ const columnsParent = [
         <div style={{height:400}}>
         <DataGrid
           components={{
-          Toolbar: GridToolbar}}
+            Toolbar: CustomToolbar}}
           rows={gr.Devices}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}
+          onSelectionModelChange={(newSelectionModel) => {
+            setSelectionModel(newSelectionModel);
+            setassociatedUserId(gr.id)
+            }}
+            selectionModel={selectionModel}
           disableSelectionOnClick
-          onRowClick={()=>{setassociatedUserId(gr.id)}}
+          checkboxSelection
+          
           />
           </div>
         </Collapse>

@@ -1,5 +1,5 @@
 const { truncateSync } = require("fs");
-const Device = require("../models/device");
+const {Device} = require("../models/device");
 const Group=require("../models/group")
 
 

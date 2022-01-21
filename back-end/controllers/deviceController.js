@@ -1,5 +1,5 @@
 
-const Device=require('../models/device');
+const {Device, Position} = require('../models/device');
 const User = require('../models/user');
 
 const deviceController={
@@ -9,13 +9,25 @@ getAll:async function(req, res) {
 
     try{
       const devices=await user.getOwnerDevice();
-      res.json({success: true, devices: devices});
+      //get device last positions:
+      var lastpos=[]
+      for(var i=0;i<devices.length;i++){
+      const LastPos=await Position.findOne({
+          attributes:['deviceId','lat','lon','Attributes','gpsTime'],
+          where:{deviceId:devices[i].id},
+          order: [['createdAt', 'DESC']],
+        })
+      lastpos.push(LastPos)
+      }
+      res.json({success: true, devices: devices,lastpos:lastpos});
     }
     catch{
           res.json({success: false,user:user});
         }
         //here  we need to filter the devices according the user Role and return the value, meanwhile we just return every device  
 },
+
+
 create:async (req,res)=>{
     const {user} = req.locals
     const {name,imei,organization}=req.body;

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/keys');
 const ActiveSession = require('../models/activeSession');
 const {smtpConf} = require('../config/smpt');
-const Device = require('../models/device');
+const {Device} = require('../models/device');
 //redis
 const { v4 } = require('uuid');
 const AssociationQuery =require('../models/associationQuery')

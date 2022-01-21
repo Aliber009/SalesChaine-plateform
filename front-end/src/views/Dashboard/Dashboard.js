@@ -63,6 +63,7 @@ import AddDeviceToGroup from "./addToGroup"
 import Snack from "views/Dialog/FeedSnack";
 import CircleIcon from '@mui/icons-material/Circle';
 import PieChart from "views/Charts/piechart";
+import TypeChart from "views/Charts/typeChart";
 
 
 const useStyles = makeStyles(styles);
@@ -92,7 +93,7 @@ const useStyles = makeStyles(styles);
     const user=JSON.parse(localStorage.getItem('user'))
     setactualUserRole(user.role)
  },[])
-
+ 
   //CRUD table devices
   const columns = [
     { flex: 1 ,field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
@@ -217,9 +218,9 @@ const checkStatus=(id)=>{
   if(currentpositions[id]){
     var diffMs = new Date() - new Date(currentpositions[id].time); // milliseconds between now & data
     var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
-    if(diffMins<30){
+    if(diffMins<10){
       status = ["Online","#06FF00"]
-      setonline(online+1)
+      //setonline(online+1)
     }
   }
   return status
@@ -352,7 +353,7 @@ const DateTimeReplay=(deviceId) => {
               </CardHeader>
             <CardHeader color="info" style={{marginTop:20}}>
               <div style={{minHeight:150,paddingTop:13 }}>
-              <PieChart series={[online ,devices.length-online]} />
+              {/* <PieChart series={[online ,devices.length-online]} /> */}
               </div>
             </CardHeader>
             <CardFooter stats>
@@ -400,25 +401,13 @@ const DateTimeReplay=(deviceId) => {
         </GridItem>
         <GridItem xs={12} sm={6} md={4} >
           <Card chart  >
-            <CardHeader color="warning" style={{minHeight:225}}>
-              <ChartistGraph
-                className="ct-chart"
-                data={emailsSubscriptionChart.data}
-                type="Bar"
-                options={emailsSubscriptionChart.options}
-                responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                listener={emailsSubscriptionChart.animation}
-              />
+            <CardHeader style={{marginBottom:-40}} >
+              <TypeChart />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <p className={classes.cardCategory}>Device Types</p>
             </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
+            
           </Card>
         </GridItem>
       </GridContainer>
@@ -437,25 +426,17 @@ const DateTimeReplay=(deviceId) => {
                 ),
               },
               {
-                tabName: "Website",
+                tabName: "Additional Map",
                 tabIcon: Code,
                 tabContent: (
-                  <Tasks
-                    checkedIndexes={[0]}
-                    tasksIndexes={[0, 1]}
-                    tasks={website}
-                  />
+                  <div>Here will be additional Maps according to any new specification</div>
                 ),
               },
               {
-                tabName: "Server",
+                tabName: "Additional Map 2",
                 tabIcon: Cloud,
                 tabContent: (
-                  <Tasks
-                    checkedIndexes={[1]}
-                    tasksIndexes={[0, 1, 2]}
-                    tasks={server}
-                  />
+                  <div>Here will be additional Maps according to any new specification</div>
                 ),
               },
             ]}

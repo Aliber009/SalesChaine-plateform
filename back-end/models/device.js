@@ -4,6 +4,28 @@ const sequelize=require('../config/sequelize')
 
 //const Group = require('./group');
 
+//Positions to get last positions from devices : 
+const Position = sequelize.define('Position',
+{
+      lat: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lon: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      gpsTime:{
+        type:DataTypes.STRING,
+        allowNull:false,
+        defaultValue:new Date().toISOString()
+      },
+      Attributes:{
+        type: DataTypes.TEXT,
+        allonNull: true,
+      },
+      
+})
 
   const Device = sequelize.define(
     'Device',
@@ -30,4 +52,4 @@ Device.belongsTo(Organization, {foreignKey: 'organization'});
 
 
 Device.sync()
-module.exports=Device
+module.exports={Device,Position}

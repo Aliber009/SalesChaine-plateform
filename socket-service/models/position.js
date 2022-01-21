@@ -30,9 +30,11 @@ const Position = sequelize.define('Position',
         type:DataTypes.STRING,
         allowNull:false,
         defaultValue:new Date().toISOString()
-        
-        
-      }
+      },
+      Attributes:{
+        type: DataTypes.TEXT,
+        allonNull: true,
+      },
       
 })
 Position.belongsTo(Devices, {foreignKey: 'deviceId'});
