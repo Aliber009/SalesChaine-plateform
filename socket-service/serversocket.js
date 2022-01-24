@@ -20,18 +20,8 @@ app.get('/', (req, res) => {
   res.send("Helolo");
 });
 
-//checking Status of devices 
-const checkStatus=(time)=>{
-  var status="Offline"
-  
-    var diffMs = new Date() - new Date(time); // milliseconds between now & data
-    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
-    if(diffMins<15){
-      status = "Online"
-    }
-  
-  return status
-}
+
+
  
 //Data should be stored in Db even the user is not connected but only updated if they're connected
 
@@ -50,7 +40,7 @@ const checkStatus=(time)=>{
           lon:jsonmsg.lng,
           deviceId:device.id,
           gpsTime:gpsTime,
-          Attributes:JSON.stringify({status:checkStatus(gpsTime),odometre:jsonmsg.odometer , battery:jsonmsg.bat_level ,temperature:jsonmsg.coolant_temp  ,speed:jsonmsg.vehicle_speed,imei:jsonmsg.serial })
+          Attributes:JSON.stringify({odometre:jsonmsg.odometer , battery:jsonmsg.bat_level ,temperature:jsonmsg.coolant_temp  ,speed:jsonmsg.vehicle_speed,imei:jsonmsg.serial })
         } 
         const pos=await Position.create(queries) ;
        //send pos and additional data :

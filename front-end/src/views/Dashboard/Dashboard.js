@@ -11,7 +11,7 @@ import DateRange from "@material-ui/icons/DateRange";
 import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
-import AccessTime from "@material-ui/icons/AccessTime";
+import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
@@ -82,7 +82,7 @@ const useStyles = makeStyles(styles);
   const [opendate,setOpendate]=useState(false)
   const [replayRow,setreplayRow]=useState("") 
   const [lastpos,setlastpos]=useState()
-  const [openassociate,setopenAssociate]=useState(false)
+  const [openassociate,setopenAssociate] = useState(false)
   const myRef = useRef()
   const [opengroupDial,setopengroupDial]=useState(false)
   const [snackinfo,setsnackinfo]=useState({open:false})
@@ -207,7 +207,9 @@ const useStyles = makeStyles(styles);
  const showpos=(e)=>{
    setlastpos(e.row.id.toString())
    myRef.current.scrollIntoView({ behavior: 'smooth',  block: 'center' , inline: "start"})
- }
+   setTimeout(()=>{setlastpos(null)},1000)
+   
+  }
  const openAssociate=()=>{
    setopenAssociate(true)
  }
@@ -216,12 +218,19 @@ const [online,setonline]=useState(0)
 const checkStatus=(id)=>{
   var status=["Offline","#9D9D9D"]
   if(currentpositions[id]){
-    var diffMs = new Date() - new Date(currentpositions[id].time); // milliseconds between now & data
-    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
-    if(diffMins<10){
+    const dt = new Date(currentpositions[id].time);
+    const nw = new Date()
+    var diffMs = nw-dt
+    const days = parseInt((diffMs ) / (1000 * 60 * 60 * 24));
+    if(Math.abs(days)>0){return status}
+    else { 
+      var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
+      console.log("diff",diffMins)
+      if(diffMins<10){
       status = ["Online","#06FF00"]
-      //setonline(online+1)
+     }
     }
+    
   }
   return status
 }
@@ -353,7 +362,7 @@ const DateTimeReplay=(deviceId) => {
               </CardHeader>
             <CardHeader color="info" style={{marginTop:20}}>
               <div style={{minHeight:150,paddingTop:13 }}>
-              {/* <PieChart series={[online ,devices.length-online]} /> */}
+              <PieChart total={devices.length} /> 
               </div>
             </CardHeader>
             <CardFooter stats>
@@ -369,7 +378,7 @@ const DateTimeReplay=(deviceId) => {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+                <DevicesOtherIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Device associations</p>
               <Typography  className={classes.cardTitle} variant="body1" style={{display:"inline-block" ,color:"#2C272E"}} >Associates: {findnumberOfdevices(dataParents) || '0'} </Typography >

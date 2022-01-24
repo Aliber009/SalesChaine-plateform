@@ -40,12 +40,30 @@ const Maps=({ markers , startAnimation, routes})=>{
   //the marks should also send data about vehicules to show on popup
 
   useEffect(() => {
- 
     var pos=[]
-    Object.entries(position).forEach(i=>{pos.push({pos:i[1].latlng,attributes:i[1].attributes})})
+    Object.entries(position).forEach(i=>{pos.push({pos:i[1].latlng,attributes:i[1].attributes,time:i[1].time})})
     setmarks(pos)
     
   }, [position])
+
+  //check online status
+  const checkStatus=(time)=>{
+    var status=["Offline","#9D9D9D"]
+    
+      const dt = new Date(time);
+      const nw = new Date()
+      var diffMs = nw-dt
+      const days = parseInt((diffMs ) / (1000 * 60 * 60 * 24));
+      if(Math.abs(days)>0){return status}
+      else { 
+        var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
+        if(diffMins<10){
+        status = ["Online","#06FF00"]
+       }
+      }
+    return status
+  }
+ 
 
   var greenIcon = L.icon({
     iconUrl: deviceIcon,
@@ -78,9 +96,9 @@ const Maps=({ markers , startAnimation, routes})=>{
     >
       <ListItemButton style={{width:200}}>
       <ListItemIcon>
-        <CircleIcon style={{fill:"green"}} />
+        <CircleIcon style={{fill:checkStatus(m.time)[1]}} />
       </ListItemIcon>
-      <ListItemText style={{marginLeft:-20}} primary={" Status : Online " } />
+      <ListItemText style={{marginLeft:-20}} primary={" Status : "+checkStatus(m.time)[0]} />
     </ListItemButton >
       <ListItemButton style={{width:200}}>
       <ListItemIcon>

@@ -19,7 +19,7 @@ const { reducer, actions } = createSlice({
         state.items[id] = {latlng:[parseFloat(i.lat),parseFloat(i.lon)],time:i.gpsTime,attributes:JSON.parse(i.Attributes)};
         }
       })
-      console.log('new stt',state.items)
+      
     },
   }
 });
