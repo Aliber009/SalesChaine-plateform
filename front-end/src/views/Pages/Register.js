@@ -16,13 +16,15 @@ import {
     Row,
     Col
 } from "reactstrap";
-import Toast from 'react-bootstrap/Toast'
-import {register} from "../../network/ApiAxios";
+import FacebookLogin from 'react-facebook-login';
+import {register,registerfromFacebook} from "../../network/ApiAxios";
 import config from "../../config";
 import Snack from "views/Dialog/FeedSnack";
+import "./facebookstyle.css"
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
-
+    const history = useHistory()
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +35,10 @@ const Register = () => {
     const [snackinfo,setsnackInfo]=useState({open:false})
     const [toastMessage, setToastMessage] = useState("Email sent! Check it to Comfirm ^ ^.");
     const [userID, setUserID] = useState(null);
+    
 
+    
+  
     const registerUser = async () => {
         if (!(name && email && password && confirmPassword && checkbox)) {
             setError("Make sure to fill all the inputs and agree to the privacy policy");
@@ -64,6 +69,21 @@ const Register = () => {
         setsnackInfo({open:true,severity:"success",message:"email sent to your email"})
     };
 
+    const responseFacebook= async (res)=>{
+         const {name,email}=res;
+         const response = await registerfromFacebook(name,email);
+         const {data} = response;
+         if (!data.success) {
+            setsnackInfo({open:true,severity:"warning",message:" email already signed up "});
+            return;
+        }
+        else{
+            setsnackInfo({open:true,severity:"success",message:" successfully sign up with facebook, you can sign in with facebook "});
+            history.push('/auth/login')
+        }
+
+    }
+
     return (
         <>
             <div
@@ -86,7 +106,7 @@ const Register = () => {
                         <div className="text-muted text-center mt-2 mb-4">
                             <small>Sign up with</small>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center" style={{paddingLeft:15}}>
                             <Button
                                 className="btn-neutral btn-icon mr-4"
                                 color="default"
@@ -96,25 +116,21 @@ const Register = () => {
                     <span className="btn-inner--icon">
                         <img
                             alt="..."
-                            src={require("assets/img/icons/common/github.svg").default}
+                            src={require("assets/img/icons/common/facebook.png").default}
                         />
                     </span>
-                                <span className="btn-inner--text">Github</span>
+                                <span className="btn-inner--text">Facebook</span>
+                             <FacebookLogin
+                               fields="name,email"
+                               textButton="face"
+                               cssClass="mybutton"
+                               size="small"
+                               appId="983323909272065"
+                               autoLoad={false}
+                               callback={responseFacebook}
+                                  />
                             </Button>
-                            <Button
-                                className="btn-neutral btn-icon"
-                                color="default"
-                                href="#pablo"
-                                onClick={e => e.preventDefault()}
-                            >
-                  <span className="btn-inner--icon">
-                    <img
-                        alt="..."
-                        src={require("assets/img/icons/common/google.svg").default}
-                    />
-                  </span>
-                                <span className="btn-inner--text">Google</span>
-                            </Button>
+                            
                         </div>
                     </CardHeader>
                     <CardBody className="px-lg-5 py-lg-5">

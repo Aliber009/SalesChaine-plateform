@@ -14,6 +14,17 @@ const AssociationQuery =require('../models/associationQuery')
 
 
 
+function makePassword(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * 
+charactersLength));
+ }
+ return result;
+}
+
 
 const userController={
 
@@ -384,8 +395,53 @@ associate: async (req,res)=>{
 }
 catch{
   res.json({msg:"key not found or expired ",success:false })
-}
+     }
 
+ },
+
+ registerfromFacebook:(req,res)=>{
+   const {email,name}=req.body
+   User.findOne({where:{email: email}}).then((user) => {
+    if (user) {
+      res.json({success: false, msg: 'Email already exists'});
+    }
+    else{
+        const password=makePassword(6);
+        bcrypt.hash(password, 10).then( function(hash) {
+          const query = {name: name, email: email, password: hash, role:"USER", accountConfirmation: true };
+          User.create(query).then(
+             ()=> {
+              res.json({success:true,msg:"User created successfully"})
+            })
+        });
+      }
+    })
+ },
+ loginwithfacebook:(req,res)=>{
+  const {email}=req.body
+  User.findOne({where:{email: email}}).then((user) => {
+   if (user) {
+    const token = jwt.sign(user, config.secret, {
+      expiresIn: 86400, // 1 week
+    });
+    // Don't include the password in the returned user object
+    const query = {userId: user.id, token: 'JWT ' + token};
+    ActiveSession.create(query)
+    .then(()=>{
+     
+      user.password = null;
+      //user.__v = null;
+        res.json({
+        success: true,
+        token: 'JWT ' + token,
+        user,
+      });
+   });
+  }
+   else {
+    res.json({success: false, msg: 'You need to register with facebook in register page'});
+   }
+ });
  },
 
  setdevices:async(req,res)=>{
@@ -393,7 +449,6 @@ catch{
     User.findOne({where:{id:2}}).then(user=>{user.addOwnerDevice(devs)})
     .catch(err=>{res.send("err")})
  }
-
  
 }
 module.exports=userController

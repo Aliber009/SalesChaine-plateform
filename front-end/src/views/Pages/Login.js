@@ -16,9 +16,10 @@ import {
     Row,
     Col
 } from "reactstrap";
-import {login} from "../../network/ApiAxios";
+import { login,loginwithFacebook } from "../../network/ApiAxios";
 import { useDispatch } from "react-redux";
 import { sessionActions } from "store"
+import FacebookLogin from 'react-facebook-login';
 
 const Login = props => {
     const dispatch=useDispatch()
@@ -41,44 +42,56 @@ const Login = props => {
             setError(data.msg);
         }
     }
+    const Facebooklogin=async (res)=>{
+     const {email}=res;
+     const response = await loginwithFacebook(email)
+     const {data}=response
+     if(data.success){
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        dispatch(sessionActions.updateSession({success:true}))
+        dispatch(sessionActions.updateUserRole(data.user.role))
+        props.history.push("/admin/dashboard");
+     }
+     else{
+        setPassword("");
+        setError(data.msg);
+     }
+    }
 
     return (
         <>
             <Col lg="5" md="7">
                 <Card className="bg-secondary shadow border-0">
                     <CardHeader className="bg-transparent pb-5">
-                        <div className="text-muted text-center mt-2 mb-3">
+                    <div className="text-muted text-center mt-2 mb-4">
                             <small>Sign in with</small>
                         </div>
-                        <div className="btn-wrapper text-center">
+                        <div className="text-center" style={{paddingLeft:15}}>
                             <Button
-                                className="btn-neutral btn-icon"
+                                className="btn-neutral btn-icon mr-4"
                                 color="default"
                                 href="#pablo"
                                 onClick={e => e.preventDefault()}
                             >
-                  <span className="btn-inner--icon">
-                    <img
-                        alt="..."
-                        src={require("assets/img/icons/common/github.svg").default}
-                    />
-                  </span>
-                                <span className="btn-inner--text">Github</span>
+                    <span className="btn-inner--icon">
+                        <img
+                            alt="..."
+                            src={require("assets/img/icons/common/facebook.png").default}
+                        />
+                    </span>
+                                <span className="btn-inner--text">Facebook</span>
+                             <FacebookLogin
+                               fields="email"
+                               textButton="face"
+                               cssClass="mybutton"
+                               size="small"
+                               appId="983323909272065"
+                               autoLoad={false}
+                               callback={Facebooklogin}
+                                  />
                             </Button>
-                            <Button
-                                className="btn-neutral btn-icon"
-                                color="default"
-                                href="#pablo"
-                                onClick={e => e.preventDefault()}
-                            >
-                  <span className="btn-inner--icon">
-                    <img
-                        alt="..."
-                        src={require("assets/img/icons/common/google.svg").default}
-                    />
-                  </span>
-                                <span className="btn-inner--text">Google</span>
-                            </Button>
+                            
                         </div>
                     </CardHeader>
                     <CardBody className="px-lg-5 py-lg-5">

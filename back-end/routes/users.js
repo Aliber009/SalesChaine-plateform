@@ -33,6 +33,8 @@ router.post('/associate',reqAuth,userController.associate);
 router.post('/findassociations',reqAuth,userController.findAssociations);
 router.post('/removeDeviceAssociations',userController.removeDeviceAssociations);
 router.post('/registerassociate',userController.registerAsAssociciate);
+router.post('/registerfromFacebook',userController.registerfromFacebook);
+router.post('/loginWithFacebook',userController.loginwithfacebook);
 //router.post('/adddevs',userController.setdevices);
 
 

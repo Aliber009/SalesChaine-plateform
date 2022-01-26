@@ -60,4 +60,10 @@ export const registerassociate = async (name, password, key) => (
 export const associateafterregister = async ( key ) => (
     await instance.post('users/associatewhenregister',  { key })
 );
+export const registerfromFacebook = async (name,email) => (
+    await instance.post('users/registerfromFacebook',  { name,email} )
+);
+export const loginwithFacebook = async (email) => (
+    await instance.post('users/loginWithFacebook',  {email} )
+);
 
