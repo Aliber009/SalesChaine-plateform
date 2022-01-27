@@ -9,9 +9,25 @@ const {smtpConf} = require('../config/smpt');
 const {Device} = require('../models/device');
 //redis
 const { v4 } = require('uuid');
-const AssociationQuery =require('../models/associationQuery')
+const AssociationQuery =require('../models/associationQuery');
+const Position=require('../models/Position')
+const ejs=require('ejs');
+var path = require('path');
 
 
+//Create default Admin User 
+User.findOne({where:{name:"admin",email:"admin"}}).then(user=>{
+  if(!user) {
+    const password="Next2022";
+        bcrypt.hash(password, 10).then( function(hash) {
+          const query = {name: "admin", email: "admin", password: hash, role:"ADMIN", accountConfirmation: true };
+          User.create(query).then(
+             ()=> {
+              console.log("User created successfully")
+            })
+        });
+  }
+})
 
 
 function makePassword(length) {
@@ -277,17 +293,19 @@ associate: async (req,res)=>{
   
  
   const transporter = nodemailer.createTransport(smtpConf);
+  let name=user.email
+  const htmlMail = await ejs.renderFile(__dirname + "/mailTemplate.ejs",{name:name,websiteurl:process.env.WebsiteUrl});
+  const mailOptions = {
+    from: '"Nextronic" <' + smtpConf.auth.user + '>',
+    to: email, // list of receivers
+    subject: 'Nextronic, Product Association', // Subject line
+    html: htmlMail
+  }
   User.findOne({where:{email: email}})
     .then(async (user)=>{
       if(user){
       try{
-       await transporter.sendMail({
-        from: '"Nextronic" <' + smtpConf.auth.user + '>',
-        to: email, // list of receivers
-        subject: 'Nextronic, Product Association', // Subject line
-        // eslint-disable-next-line max-len
-        html: '<h1>Hey</h1><br><p>You are invited to associate to product from :  </p><p><br><br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
-      }); 
+         await transporter.sendMail(mailOptions); 
          await user.addDevice(deviceId, { through: { giverId: userId }})
          //await user.addDevice(deviceId); 
         res.json({success:true,msg:"Association notification has been sent through mail"})
@@ -297,17 +315,21 @@ associate: async (req,res)=>{
       }
     }
       else{
-        await AssociationQuery.create({key:uuID,info:JSON.stringify({giverId:userId,email:email,deviceIds:deviceId})})
-        await transporter.sendMail({
+        let associateacc=process.env.registeraccount+uuID
+        const htmlMailreg = await ejs.renderFile(__dirname + "/associationMail.ejs",{name:name,assciateaccount:associateacc});
+        const mailOptionsreg = {
           from: '"Nextronic" <' + smtpConf.auth.user + '>',
           to: email, // list of receivers
           subject: 'Nextronic, Product Association', // Subject line
-          html: '<h1>Hey</h1><br><p>You are invited to associate to product from : ! You need to create account first via this link : <a href="' + 'http://localhost:3000/auth/registerassociate/'+uuID+'"> Register As Associate </a><br></br>If you did not ask for it, please let us know immediately at <a href="mailto:' + smtpConf.auth.user + '">' + smtpConf.auth.user + '</a></p>', // html body
-      });
+          html: htmlMailreg
+        }
+        await AssociationQuery.create({key:uuID,info:JSON.stringify({giverId:userId,email:email,deviceIds:deviceId})})
+        await transporter.sendMail(mailOptionsreg); 
+   
       await res.json({success:true,msg:"Association email has been sent! Invited user must register"})
       }
     })
-    .catch(err=>{res.json({success:false,msg:err})})
+    .catch(err=>{res.json({success:false,msg:"error try again"})})
  },
  findAssociations:(req,res)=>{
    const {user} = req.locals
@@ -331,16 +353,30 @@ associate: async (req,res)=>{
      const devParent= await user.getParents();
      var lisparents=[];
      var checkduplicatesPar=[]
+     var lastpos=[]
      for(var i=0;i<devParent.length;i++)
      {
-      const dev=await user.getDevices({through:{model:devParent[i]}});
+      
+      var dev=await user.getDevices({through:{model:devParent[i]}});
+      //get device last positions:
+
+       for(var j=0;j<dev.length;j++){
+       const LastPos=await Position.findOne({
+          attributes:['deviceId','lat','lon','Attributes','gpsTime'],
+          where:{deviceId:dev[j].id},
+          order: [['createdAt', 'DESC']],
+        });
+        if(lastpos.includes(LastPos)==false){
+            lastpos.push(LastPos)
+        }
+      } 
       if(checkduplicatesPar.includes(devParent[i].id)==false){
       checkduplicatesPar.push(devParent[i].id);
       lisparents.push({id:devParent[i].id,name:devParent[i].name,email:devParent[i].email,Devices:dev})
      }
     }
      // response of both parents and children devices 
-      res.json({success:true,associationsChildren:lischildren,associationsParent:lisparents})
+      res.json({success:true,associationsChildren:lischildren,associationsParent:lisparents,ParentDevicePosition:lastpos})
 
    })
    .catch(err=>{res.json({success:false,msg:err})})

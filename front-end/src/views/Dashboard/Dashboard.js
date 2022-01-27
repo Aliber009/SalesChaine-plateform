@@ -225,7 +225,8 @@ const checkStatus=(id)=>{
     if(Math.abs(days)>0){return status}
     else { 
       var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
-      if(diffMins<10){
+      if(Math.abs(diffMins)<10){
+        console.log("diif",diffMins)
       status = ["Online","#06FF00"]
      }
     }

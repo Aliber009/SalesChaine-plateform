@@ -15,7 +15,7 @@ const SocketController = () => {
 
   //socket in state 
   const [socket, setSocket] = useState(null);
-  
+  console.log("data",devices)
     //const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     useEffect(() => {
         const socket = io(process.env.REACT_APP_SOCKET_URL);

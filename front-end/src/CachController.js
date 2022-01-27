@@ -122,10 +122,11 @@ useEffect(async () => {
        
 });
   if (response.ok) {
-    const {associationsParent,associationsChildren}=await response.json()
+    const {associationsParent,associationsChildren,ParentDevicePosition}=await response.json()
     dispatch(associationsActions.updateChildren(associationsChildren));
     dispatch(associationsActions.updateParents(associationsParent));
     dispatch(devicesActions.displayShared(associationsParent));
+    dispatch(positionsActions.updateAll(ParentDevicePosition))
   }
 }
 }, [logged]);

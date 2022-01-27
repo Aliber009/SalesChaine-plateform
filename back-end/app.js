@@ -19,6 +19,8 @@ require('dotenv').config();
 // Instantiate express
 const app = express();
 app.use(compression());
+//load static files with express 
+app.use( express.static(__dirname + '/assets'));
 // Passport Config
 require('./config/passport')(passport);
 
