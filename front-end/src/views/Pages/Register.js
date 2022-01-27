@@ -66,7 +66,7 @@ const Register = () => {
         setConfirmPassword("");
         setCheckbox(false);
         //setShowToast(true);
-        setsnackInfo({open:true,severity:"success",message:"email sent to your email"})
+        setsnackInfo({open:true,severity:"success",message:"An email has been sent to your email adress"})
     };
 
     const responseFacebook= async (res)=>{
@@ -74,7 +74,7 @@ const Register = () => {
          const response = await registerfromFacebook(name,email);
          const {data} = response;
          if (!data.success) {
-            setsnackInfo({open:true,severity:"warning",message:" email already signed up "});
+            setsnackInfo({open:true,severity:"warning",message:" Email already signed up! Try to log in in login page "});
             return;
         }
         else{

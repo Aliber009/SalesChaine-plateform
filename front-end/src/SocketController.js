@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 const SocketController = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  
+  const devices=useSelector(state=>state.devices.items).map(i=>i.id)
 
   //socket in state 
   const [socket, setSocket] = useState(null);
@@ -23,7 +23,9 @@ const SocketController = () => {
         setSocket(socket);
         //data received on socket
         socket.on("tst",data=>{
+         if(devices.includes(data.deviceId)){
           dispatch(positionsActions.update(data))
+         }
         })
       
         return () => socket.close();
