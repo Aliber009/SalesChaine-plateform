@@ -82,10 +82,11 @@ const Maps=({ markers , startAnimation, routes})=>{
 
   <TileLayer
     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    url="https://2.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?apiKey=jab0Ntex6UOajMfdGw1Z9P4sLbfqsfBGQ6UQ6_4NKps"
   />
    <SnakeAnim startAnimation={startAnimation} routes={routes} />
-   <MarkerClusterGroup>
+   <MarkerClusterGroup showCoverageOnHover={false} >
    
   {marks.map((m)=>(
   <Marker position={m.pos} icon={greenIcon}>

@@ -236,7 +236,7 @@ function CustomToolbar() {
         
         { gr.Devices.length>0? open[gr.id] ? <ExpandLess /> : <ExpandMore />:null}
         <IconButton onClick={()=>{setmode('delete');setOpenDial(true); setRow(gr)}} style={{marginLeft:20}}>
-        <ClearIcon style={{fill:"red"}}/>
+        
         </IconButton>
         </ListItemButton>
         {gr.Devices.length>0 && 
