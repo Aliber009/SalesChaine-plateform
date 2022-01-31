@@ -86,7 +86,8 @@ const columnsChild = [
     field: "imei",
     headerName: "Imei",
     headerAlign:"center",
-    width: 100,
+    align:"center",
+    width: 250,
     editable: true,
   },
   
@@ -134,7 +135,8 @@ const columnsParent = [
     field: "imei",
     headerName: "Imei",
     headerAlign:"center",
-    width: 100,
+    align:"center",
+    width: 250,
     editable: true,
   },
 
@@ -219,7 +221,7 @@ function CustomToolbar() {
    const ids=devices.map(i=>i.id)
    return ids
   } 
-  const formateDataToTables=(d,columns)=>{
+  const formateDataToTables=(d,columns,isParent)=>{
     
     if(d){
     return(
@@ -242,8 +244,9 @@ function CustomToolbar() {
         <Collapse in={open[gr.id]} timeout="auto" unmountOnExit>
         <div style={{height:400}}>
         <DataGrid
-          components={{
-            Toolbar: CustomToolbar}}
+          components={
+            isParent ? {Toolbar: CustomToolbar} : { Toolbar: GridToolbar }
+          }
           rows={gr.Devices}
           columns={columns}
           pageSize={10}
@@ -287,7 +290,7 @@ function CustomToolbar() {
          component="nav"
          aria-labelledby="nested-list-subheader"
          >
-          {formateDataToTables(dataChildren,columnsChild)}
+          {formateDataToTables(dataChildren,columnsChild,true)}
         </List>
         </CardBody>
         </Card>
@@ -309,7 +312,7 @@ function CustomToolbar() {
          component="nav"
          aria-labelledby="nested-list-subheader"
          >
-          {formateDataToTables(dataParents,columnsParent)}
+          {formateDataToTables(dataParents,columnsParent,false)}
         </List>
         </CardBody>
         </Card>

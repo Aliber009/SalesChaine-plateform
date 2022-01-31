@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
           Attributes:JSON.stringify({odometre:jsonmsg.odometer , battery:jsonmsg.bat_level ,temperature:jsonmsg.coolant_temp  ,speed:jsonmsg.vehicle_speed,imei:jsonmsg.serial })
         } 
         const pos=await Position.create(queries) ;
-       //send pos and additional data :
+        //send pos and additional data only if the user has it
             io.emit('tst',pos);
         
         } 

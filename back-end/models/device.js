@@ -43,7 +43,7 @@ const Position = sequelize.define('Position',
 
 })
 //One to one 
-
+Position.belongsTo(Device, {foreignKey: 'deviceId'});
 Device.belongsTo(Organization, {foreignKey: 'organization'});
 
 //One to many : check Groupe has many => check groups

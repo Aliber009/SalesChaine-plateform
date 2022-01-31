@@ -222,10 +222,11 @@ const checkStatus=(id)=>{
     const nw = new Date()
     var diffMs = nw-dt
     const days = parseInt((diffMs ) / (1000 * 60 * 60 * 24));
-    if(Math.abs(days)>0){return status}
+    const hours = parseInt((diffMs ) / (1000 * 60 * 60));
+    if(Math.abs(days)>0 || Math.abs(hours) > 0){return status}
     else { 
       var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
-      if(Math.abs(diffMins)<10){
+      if(diffMins<10){
         console.log("diif",diffMins)
       status = ["Online","#06FF00"]
      }
@@ -408,10 +409,10 @@ const DateTimeReplay=(deviceId) => {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={6} md={4} >
+        <GridItem xs={12} sm={12} md={4} >
           <Card chart  >
             <CardHeader style={{marginBottom:-40}} >
-              <TypeChart />
+              <TypeChart seriesData={[0,0,0,0,devices.length]}/>
             </CardHeader>
             <CardBody>
               <p className={classes.cardCategory}>Device Types</p>

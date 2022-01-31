@@ -119,7 +119,7 @@ export default function Sidebar(props) {
     </List>
   );
   var brand = (
-    <div className={classes.logo}>
+    <div className={classes.logo} style={{color:"#FFF"}}>
       <a
         
         className={classNames(classes.logoLink, {
@@ -127,10 +127,10 @@ export default function Sidebar(props) {
         })}
         target="_blank"
       >
-        <div className={classes.logoImage}>
+        <div className={classes.logoImage} style={{marginBottom:35}}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
-        N E X T - Devices
+        N E X T   Devices
       </a>
     </div>
   );

@@ -54,7 +54,8 @@ const Maps=({ markers , startAnimation, routes})=>{
       const nw = new Date()
       var diffMs = nw-dt
       const days = parseInt((diffMs ) / (1000 * 60 * 60 * 24));
-      if(Math.abs(days)>0){return status}
+      const hours = parseInt((diffMs ) / (1000 * 60 * 60));
+      if(Math.abs(days)>0 || Math.abs(hours)>0){return status}
       else { 
         var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); 
         if(Math.abs(diffMins)<10){

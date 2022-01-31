@@ -6,11 +6,10 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/keys');
 const ActiveSession = require('../models/activeSession');
 const {smtpConf} = require('../config/smpt');
-const {Device} = require('../models/device');
+const {Device,Position} = require('../models/device');
 //redis
 const { v4 } = require('uuid');
 const AssociationQuery =require('../models/associationQuery');
-const Position=require('../models/Position')
 const ejs=require('ejs');
 var path = require('path');
 
@@ -411,9 +410,8 @@ associate: async (req,res)=>{
     } else if (password.length < 6) {
       res.json({success: false, msg: 'Password must be at least 6 characters long'});
     } else {
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, null, (err, hash) => {
-          if (err) throw err;
+        bcrypt.hash(password, 10).then( function(hash) {
+          
           const query = {name: name, email: email, password: hash, role:"USER",accountConfirmation:true};
            User.create(query)
            .then(async(userr) =>{
@@ -424,7 +422,7 @@ associate: async (req,res)=>{
             })
             .catch(err=>{res.json({sucess:false,msg:"Error occuried"})})
          
-        });
+       
       });
     }
   });

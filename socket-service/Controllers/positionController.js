@@ -3,6 +3,9 @@ const {Position} =require('../models/position');
 const {Op}=require('sequelize')
 
 const PositionController={
+ emitPositions=(res,res)=>{
+
+ },   
  lastPosition:(req,res)=>{
     const deviceId=req.query.deviceId;
     Position.findOne({

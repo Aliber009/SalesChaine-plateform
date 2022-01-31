@@ -1,10 +1,10 @@
 import React,{useState, useEffect} from "react";
 import ReactApexChart from "react-apexcharts";
 
-const TypeChart=()=>{
+const TypeChart=({seriesData})=>{
       
         const series= [{
-          data: [21, 22, 10, 28, 16]
+          data: seriesData
         }];
         const options= {
           chart: {
@@ -31,15 +31,15 @@ const TypeChart=()=>{
           },
           xaxis: {
             categories: [
-              ['Temperature'],
-              ['Gps'],
-              ['Oxymetre'], 
               ['humidity sensor'],
+              ['Temperature'],
+              ['Oxymetre'], 
               ['QR pass'],
+              ['Gps'],
             ],
             labels: {
               style: {
-                fontSize: '9px',
+                fontSize: '11px',
                 colors:["#000"],
                 
               }
