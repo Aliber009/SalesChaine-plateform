@@ -166,7 +166,7 @@ const [rows,setRows]=useState([])
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>List of Users</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is the global list of all the plateform users
+              Here is the global list of all the plateform users.&nbsp;&nbsp;&nbsp; Actual user not included !
             </p>
           </CardHeader>
           <CardBody style={{height:800}}>

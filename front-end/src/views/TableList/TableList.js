@@ -74,37 +74,43 @@ export default  function TableList() {
   const [mode,setmode]=useState("")
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
+    { field: "id", headerName: "ID",  minWidth:10, headerAlign:"left",align: "left",hide:true,flex:1 },
     {
       field: "name",
       headerName: "Company Name",
       headerAlign:"left",
       align: "left",
-      width: 150,
+      minWidth:100,
       editable: true,
+      flex:1
     },
     {
       field: "description",
       headerName: "Type",
-      width: 150,
+      minWidth:200,
       editable: true,
+      flex:1
+
     },
     {
       field: "Edit",
       headerName: "",
-      width: 20,
       align:'center',
       sortable:false,
       disableColumnMenu:true,
+      
+      minWidth:10,
+      flex:1,
       renderCell:(e)=>{return(<IconButton onClick={()=>editRows(e)}>< ModeEditOutlinedIcon /> </IconButton>)}
     },
     {
       field: "remove",
       headerName: "",
-      width: 20,
       align:'center',
       sortable:false,
       disableColumnMenu:true,
+      minWidth:20,
+      flex:1,
       renderCell:(e)=>{  return(<IconButton onClick={()=>removeRows(e)}>< ClearIcon  style={{fill:'red'}} /></IconButton>)}
       
     },

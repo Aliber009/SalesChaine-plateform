@@ -181,7 +181,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
         <DialogContent>
         <GridContainer>
             {source=="devices" && mode=="edit" && (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Device Name"
                     id="company-disabled"
@@ -192,7 +192,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.name }   
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Imei"
                     id="username"
@@ -203,7 +203,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.imei }  
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={6}>
                 <Autocomplete
                 disableClearable
                 style={{marginTop:27}}
@@ -212,14 +212,14 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 options={orgsArray}
                 renderInput={(params) => 
                 <TextField 
-                {...params} label="Client owner"  variant="standard"/>} 
+                {...params} label="Company"  variant="standard"/>} 
                 onChange={(e,val)=>{setItem({...item,organization:val.id})}}
                 value={findorgLabel(item.organization)}  
                  />
                 </GridItem>
                 </>)}
                 {source=="devices" && mode=="create" && (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Device Name"
                     id="company-disabled"
@@ -230,7 +230,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                       
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Imei"
                     id="username"
@@ -241,7 +241,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={6}>
                 <Autocomplete
                 style={{marginTop:27}}
                 disableClearable
@@ -250,7 +250,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 options={orgsArray}
                 renderInput={(params) => 
                 <TextField 
-                {...params} label="Client owner"  variant="standard"/>} 
+                {...params} label="Company"  variant="standard"/>} 
                 onChange={(e,val)=>{setItem({...item,organization:val.id})}}
                  
                  />
@@ -258,7 +258,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </>)}
             {source=="users" && mode=="edit" && 
             (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Name"
                     id="company-disabled"
@@ -269,7 +269,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.name }      
                   />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={5}>
+                  {/* <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
                     labelText="Password"
                     id="pass"
@@ -279,8 +279,8 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     onChange={(e)=>{setItem({...item,password:e.target.value})}}
                     value={item.password }    
                   />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                </GridItem> */}
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Email"
                     id="username"
@@ -291,7 +291,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.email}      
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Company"
                     id="eclient"
@@ -302,7 +302,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.company}      
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={6}>
                 <Autocomplete
                 style={{marginTop:27}}
                 disablePortal
@@ -317,7 +317,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 value={item.role}  
                  />
                 </GridItem>
-                <GridItem  style={{marginTop:38,marginLeft:7}}>
+                <GridItem  style={{marginTop:15,marginLeft:7}}>
                   <FormControlLabel control={
                   <Checkbox style={{marginRight:10}} 
                    onChange={(e)=>{setItem({...item,accountConfirmation:e.target.checked})}}
@@ -329,7 +329,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </>)}
                 {source=="users" && mode=="create" && 
             (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
                     labelText="Name"
                     id="company-disabled"
@@ -339,7 +339,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     onChange={(e)=>{setItem({...item,name:e.target.value})}}   
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={3}>
                 <CustomInput
                     labelText="Password"
                     id="pass"
@@ -350,7 +350,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                   
                   />
                   </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Email"
                     id="username"
@@ -385,7 +385,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                   
                  />
                 </GridItem>
-                <GridItem  style={{marginTop:38,marginLeft:7}}>
+                <GridItem  style={{marginTop:15,marginLeft:7}}>
                   <FormControlLabel control={
                   <Checkbox style={{marginRight:10}} 
                    onChange={(e)=>{setItem({...item,accountConfirmation:e.target.checked})}}
@@ -395,7 +395,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </GridItem>
                 </>)}
                 {source=="organizations" && mode=="edit" && (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Name"
                     id="company-disabled"
@@ -406,7 +406,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                     value={item.name}   
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Description"
                     id="username"
@@ -419,7 +419,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                 </GridItem>
                 </>)}
                 {source=="organizations" && mode=="create" && (<>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Name"
                     id="company-disabled"
@@ -430,7 +430,7 @@ const EditCreateItem=({open,setOpen,mode,source,row})=> {
                      
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Description"
                     id="username"

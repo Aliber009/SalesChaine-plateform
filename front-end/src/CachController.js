@@ -54,7 +54,8 @@ const Role = useSelector(state => state.session.userRole );
         });
           if (response.ok) {
             const users=await response.json()
-            dispatch(usersActions.update(users.users));
+            const UsersExceptMe = users.users.filter(u=>u.id!=JSON.parse(localStorage.getItem('user')).id)
+            dispatch(usersActions.update(UsersExceptMe));
           }
      }
       }, [logged,Role]);

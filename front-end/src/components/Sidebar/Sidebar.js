@@ -130,7 +130,7 @@ export default function Sidebar(props) {
         <div className={classes.logoImage} style={{marginBottom:35}}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
-        N E X T   Devices
+        NEXT - Devices
       </a>
     </div>
   );
