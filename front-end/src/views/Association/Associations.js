@@ -100,26 +100,7 @@ const columnsChild = [
     width: 100,
     
   },
-  {
-   field:"removeAssociation",
-   headerName:"",
-   sortable:false,
-   width:20,
-   disableColumnMenu:true,
-   renderCell:(e)=>{ 
-     return(
-       
-     <>
-     
-     <Tooltip title="Remove Association">
-       <IconButton onClick={()=>removeAssociationDevice(e.row.id)}>< PersonRemoveIcon  style={{fill:'red'}} />
-       </IconButton>
-     </Tooltip>
-     
-    </>)}
-      
-   
-  },
+  
 ];
 const columnsParent = [
   { field: "id", headerName: "ID", width: 90, headerAlign:"left",align: "left",hide:true },
