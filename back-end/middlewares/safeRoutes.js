@@ -10,7 +10,7 @@ const reqAuth = async (req, res, next) => {
   const session=await ActiveSession.findAll({where:{token: token}})
     if (session.length == 1) {
       const user = await User.findOne({where:{id:session[0].userId}})
-      req.locals={user}; 
+      req.locals={user,token}; 
       return next();
       
     } else {

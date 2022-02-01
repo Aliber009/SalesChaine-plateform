@@ -74,6 +74,7 @@ const useStyles = makeStyles(styles);
   const currentpositions = useSelector(state=>state.positions.items)
   const dataParents=useSelector(state=>state.associations.parents)
   const dataChildren=useSelector(state=>state.associations.children)
+  const organizations= useSelector(state=>state.organizations.items)
   const classes = useStyles();
   const [selectionModel,setSelectionModel]=useState([])
   const [open,setOpen]=useState()
@@ -235,12 +236,23 @@ const checkStatus=(id)=>{
   }
   return status
 }
+//find orgLabel
+const findorgLabel=(id)=>{
+  for(var i=0;i<organizations.length;i++)
+  {
+    if(id==organizations[i].id)
+    {
+      return organizations[i].name
+    }
+  }
+  
+}
 
 const [Rows,setRows]=useState({})
 useEffect(()=>{
    const user=JSON.parse(localStorage.getItem('user'))
    setactualUserRole(user.role)
-   setRows(devices)
+   setRows(devices.map(d=>{return {...d,organization:findorgLabel(d.organization)}}))
 
 },[devices])
 

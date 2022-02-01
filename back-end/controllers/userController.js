@@ -270,9 +270,9 @@ login:(req, res) => {
     .catch(err=>{res.json({success:false,msg:"cant log in"})})
 },
 logout:async(req, res) => {
-    const {user}=req.locals
+    const {token}=req.locals
     try{
-    await ActiveSession.destroy({where:{userId: user.id}})
+    await ActiveSession.destroy({where:{token: token}})
     res.json({success:true})
     }
     catch{
