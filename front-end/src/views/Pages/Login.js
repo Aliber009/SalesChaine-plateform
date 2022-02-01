@@ -86,7 +86,7 @@ const Login = props => {
                                textButton="face"
                                cssClass="mybutton"
                                size="small"
-                               appId="983323909272065"
+                               appId="362042259093994"
                                autoLoad={false}
                                callback={Facebooklogin}
                                   />
